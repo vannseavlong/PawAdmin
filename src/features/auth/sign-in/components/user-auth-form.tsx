@@ -8,7 +8,6 @@ import { toast } from 'sonner'
 import { type AuthUser, useAuthStore } from '@/stores/auth-store'
 import { ApiError, apiClient, API_BASE_URL } from '@/lib/api-client'
 import { cn } from '@/lib/utils'
-import { GoogleIcon } from '@/components/google-icon'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -19,6 +18,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { GoogleIcon } from '@/components/google-icon'
 import { PasswordInput } from '@/components/password-input'
 
 const formSchema = z.object({
@@ -63,9 +63,7 @@ export function UserAuthForm({
       )
 
       if (user.role !== 'admin') {
-        toast.error(
-          'This account does not have admin access to Paw Admin.'
-        )
+        toast.error('This account does not have admin access to Paw Admin.')
         return
       }
 
@@ -129,7 +127,7 @@ export function UserAuthForm({
             <span className='w-full border-t' />
           </div>
           <div className='relative flex justify-center text-xs uppercase'>
-            <span className='bg-background text-muted-foreground px-2'>
+            <span className='bg-background px-2 text-muted-foreground'>
               or continue with
             </span>
           </div>

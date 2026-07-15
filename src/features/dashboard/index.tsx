@@ -8,10 +8,6 @@ import {
   Users as UsersIcon,
   XCircle,
 } from 'lucide-react'
-import { fetchBookings } from '@/features/orders/data/bookings-api'
-import { type BookingStatus } from '@/features/orders/data/schema'
-import { fetchServices } from '@/features/content/data/services-api'
-import { fetchUsers } from '@/features/users/data/users-api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
@@ -19,6 +15,10 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { fetchServices } from '@/features/content/data/services-api'
+import { fetchBookings } from '@/features/orders/data/bookings-api'
+import { type BookingStatus } from '@/features/orders/data/schema'
+import { fetchUsers } from '@/features/users/data/users-api'
 
 const BOOKING_STATUSES: {
   status: BookingStatus

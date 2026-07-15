@@ -6,11 +6,11 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { fetchServices } from './data/services-api'
 import { ServicesDialogs } from './components/services-dialogs'
 import { ServicesPrimaryButtons } from './components/services-primary-buttons'
 import { ServicesProvider } from './components/services-provider'
 import { ServicesTable } from './components/services-table'
+import { fetchServices } from './data/services-api'
 
 const route = getRouteApi('/_authenticated/content/')
 

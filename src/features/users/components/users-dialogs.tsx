@@ -1,5 +1,5 @@
-import { UsersStatusDialog } from './users-status-dialog'
 import { useUsers } from './users-provider'
+import { UsersStatusDialog } from './users-status-dialog'
 
 export function UsersDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useUsers()

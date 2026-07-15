@@ -108,7 +108,9 @@ export function ServicesMutateDialog({
     >
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader className='text-start'>
-          <DialogTitle>{isEdit ? 'Edit Service' : 'Add New Service'}</DialogTitle>
+          <DialogTitle>
+            {isEdit ? 'Edit Service' : 'Add New Service'}
+          </DialogTitle>
           <DialogDescription>
             {isEdit
               ? 'Update the catalogue entry here.'
@@ -228,7 +230,11 @@ export function ServicesMutateDialog({
                       <div className='col-span-4 flex items-center gap-2'>
                         <input
                           type='color'
-                          value={/^#[0-9a-fA-F]{6}$/.test(field.value) ? field.value : '#D6EAE4'}
+                          value={
+                            /^#[0-9a-fA-F]{6}$/.test(field.value)
+                              ? field.value
+                              : '#D6EAE4'
+                          }
                           onChange={(e) => field.onChange(e.target.value)}
                           className='h-9 w-10 shrink-0 cursor-pointer rounded border'
                         />
@@ -270,7 +276,9 @@ export function ServicesMutateDialog({
                 name='active'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>Active</FormLabel>
+                    <FormLabel className='col-span-2 text-end'>
+                      Active
+                    </FormLabel>
                     <FormControl>
                       <Switch
                         checked={field.value}

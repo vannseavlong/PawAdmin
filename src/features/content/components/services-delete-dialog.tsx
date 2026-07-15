@@ -63,10 +63,10 @@ export function ServicesDeleteDialog({
           <p className='mb-2'>
             Are you sure you want to delete{' '}
             <span className='font-bold'>{currentRow.name}</span>? This is a{' '}
-            <span className='font-bold'>hard delete</span> — the catalogue
-            entry is removed for good, with no undo. Existing bookings that
-            reference this service keep their own copy of the service name,
-            so they are unaffected.
+            <span className='font-bold'>hard delete</span> — the catalogue entry
+            is removed for good, with no undo. Existing bookings that reference
+            this service keep their own copy of the service name, so they are
+            unaffected.
           </p>
 
           <Label className='my-2'>

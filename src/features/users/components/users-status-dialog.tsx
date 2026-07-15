@@ -44,9 +44,10 @@ export function UsersStatusDialog({
       desc={
         nextStatus === 'inactive' ? (
           <p>
-            This marks the account as <span className='font-bold'>inactive</span>.
-            Note: this is informational only for now — it does not yet block
-            the user from logging into the mobile app.
+            This marks the account as{' '}
+            <span className='font-bold'>inactive</span>. Note: this is
+            informational only for now — it does not yet block the user from
+            logging into the mobile app.
           </p>
         ) : (
           <p>

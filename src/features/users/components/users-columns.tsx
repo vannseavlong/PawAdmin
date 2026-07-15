@@ -14,9 +14,7 @@ export const usersColumns: ColumnDef<User>[] = [
       <DataTableColumnHeader column={column} title='Name' />
     ),
     cell: ({ row }) => (
-      <LongText className='max-w-48 ps-3'>
-        {row.getValue('full_name')}
-      </LongText>
+      <LongText className='max-w-48 ps-3'>{row.getValue('full_name')}</LongText>
     ),
     meta: {
       className: cn(

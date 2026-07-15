@@ -9,7 +9,7 @@ export function SignIn() {
     <AuthLayout>
       <div className='space-y-1'>
         <h1 className='text-2xl font-bold tracking-tight'>Sign in</h1>
-        <p className='text-muted-foreground text-sm'>
+        <p className='text-sm text-muted-foreground'>
           Access your Paw admin portal
         </p>
       </div>
@@ -18,7 +18,7 @@ export function SignIn() {
         <UserAuthForm redirectTo={redirect} />
       </div>
 
-      <p className='text-muted-foreground mt-6 text-center text-xs'>
+      <p className='mt-6 text-center text-xs text-muted-foreground'>
         By continuing, you agree to our Terms of Use and Privacy Policy.
         <br />
         Access is restricted to authorised admin accounts only.

@@ -7,10 +7,10 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { fetchUsers } from './data/users-api'
 import { UsersDialogs } from './components/users-dialogs'
 import { UsersProvider } from './components/users-provider'
 import { UsersTable } from './components/users-table'
+import { fetchUsers } from './data/users-api'
 
 const route = getRouteApi('/_authenticated/users/')
 
@@ -40,8 +40,8 @@ export function Users() {
           <div>
             <h2 className='text-2xl font-bold tracking-tight'>User List</h2>
             <p className='text-muted-foreground'>
-              Accounts registered through the mobile app. Suspend or
-              reactivate access here.
+              Accounts registered through the mobile app. Suspend or reactivate
+              access here.
             </p>
           </div>
         </div>

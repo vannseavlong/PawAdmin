@@ -6,7 +6,10 @@ const contentSearchSchema = z.object({
   page: z.number().optional().catch(1),
   pageSize: z.number().optional().catch(10),
   category: z.array(z.string()).optional().catch([]),
-  active: z.array(z.union([z.literal('active'), z.literal('inactive')])).optional().catch([]),
+  active: z
+    .array(z.union([z.literal('active'), z.literal('inactive')]))
+    .optional()
+    .catch([]),
   search: z.string().optional().catch(''),
 })
 

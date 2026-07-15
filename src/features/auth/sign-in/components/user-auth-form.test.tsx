@@ -8,29 +8,36 @@ const FORM_MESSAGES = {
   passwordEmpty: 'Please enter your password.',
 } as const
 
-const { navigate, setUserMock, setAccessTokenMock, postMock, toastError, toastSuccess, MockApiError } =
-  vi.hoisted(() => {
-    class MockApiError extends Error {
-      status: number
-      details?: string[]
-      constructor(status: number, message: string, details?: string[]) {
-        super(message)
-        this.name = 'ApiError'
-        this.status = status
-        this.details = details
-      }
+const {
+  navigate,
+  setUserMock,
+  setAccessTokenMock,
+  postMock,
+  toastError,
+  toastSuccess,
+  MockApiError,
+} = vi.hoisted(() => {
+  class MockApiError extends Error {
+    status: number
+    details?: string[]
+    constructor(status: number, message: string, details?: string[]) {
+      super(message)
+      this.name = 'ApiError'
+      this.status = status
+      this.details = details
     }
+  }
 
-    return {
-      navigate: vi.fn(),
-      setUserMock: vi.fn(),
-      setAccessTokenMock: vi.fn(),
-      postMock: vi.fn(),
-      toastError: vi.fn(),
-      toastSuccess: vi.fn(),
-      MockApiError,
-    }
-  })
+  return {
+    navigate: vi.fn(),
+    setUserMock: vi.fn(),
+    setAccessTokenMock: vi.fn(),
+    postMock: vi.fn(),
+    toastError: vi.fn(),
+    toastSuccess: vi.fn(),
+    MockApiError,
+  }
+})
 
 vi.mock('@/stores/auth-store', () => ({
   useAuthStore: () => ({

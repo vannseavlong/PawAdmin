@@ -6,10 +6,10 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { fetchBookings } from './data/bookings-api'
 import { OrdersDialogs } from './components/orders-dialogs'
 import { OrdersProvider } from './components/orders-provider'
 import { OrdersTable } from './components/orders-table'
+import { fetchBookings } from './data/bookings-api'
 
 const route = getRouteApi('/_authenticated/orders/')
 

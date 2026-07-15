@@ -1,10 +1,16 @@
 import { type BookingStatus } from './schema'
 
 export const statusStyles = new Map<BookingStatus, string>([
-  ['pending', 'bg-amber-100/40 text-amber-900 dark:text-amber-200 border-amber-300'],
+  [
+    'pending',
+    'bg-amber-100/40 text-amber-900 dark:text-amber-200 border-amber-300',
+  ],
   ['confirmed', 'bg-sky-100/40 text-sky-900 dark:text-sky-100 border-sky-300'],
   ['active', 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'],
-  ['completed', 'bg-emerald-100/40 text-emerald-900 dark:text-emerald-200 border-emerald-300'],
+  [
+    'completed',
+    'bg-emerald-100/40 text-emerald-900 dark:text-emerald-200 border-emerald-300',
+  ],
   [
     'cancelled',
     'bg-destructive/10 dark:bg-destructive/50 text-destructive dark:text-primary border-destructive/10',

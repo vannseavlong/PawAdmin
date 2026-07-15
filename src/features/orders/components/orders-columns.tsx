@@ -87,7 +87,10 @@ export const ordersColumns: ColumnDef<Booking>[] = [
     cell: ({ row }) => {
       const { status } = row.original
       return (
-        <Badge variant='outline' className={cn('capitalize', statusStyles.get(status))}>
+        <Badge
+          variant='outline'
+          className={cn('capitalize', statusStyles.get(status))}
+        >
           {statusLabels[status]}
         </Badge>
       )

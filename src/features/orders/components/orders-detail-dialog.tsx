@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import {
   Dialog,
@@ -6,7 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { cn } from '@/lib/utils'
 import { formatDate, statusLabels, statusStyles } from '../data/data'
 import { type Booking } from '../data/schema'
 
@@ -48,13 +48,19 @@ export function OrdersDetailDialog({
           </DialogDescription>
         </DialogHeader>
         <dl className='divide-y'>
-          <Field label='Pet' value={`${currentRow.pet_name} (${currentRow.pet_type})`} />
+          <Field
+            label='Pet'
+            value={`${currentRow.pet_name} (${currentRow.pet_type})`}
+          />
           <Field label='Service' value={currentRow.service_name} />
           <Field
             label='Dates'
             value={`${formatDate(currentRow.start_date)} → ${formatDate(currentRow.end_date)} (${currentRow.nights} night${currentRow.nights === 1 ? '' : 's'})`}
           />
-          <Field label='Daily rate' value={`$${currentRow.daily_rate.toFixed(2)}`} />
+          <Field
+            label='Daily rate'
+            value={`$${currentRow.daily_rate.toFixed(2)}`}
+          />
           <Field label='Total' value={`$${currentRow.total.toFixed(2)}`} />
           <Field label='Owner' value={currentRow.user_name} />
           <Field label='Owner email' value={currentRow.user_email} />

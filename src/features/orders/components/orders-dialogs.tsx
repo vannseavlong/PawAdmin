@@ -3,8 +3,7 @@ import { useOrders } from './orders-provider'
 import { OrdersStatusDialog } from './orders-status-dialog'
 
 export function OrdersDialogs() {
-  const { open, setOpen, currentRow, setCurrentRow, targetStatus } =
-    useOrders()
+  const { open, setOpen, currentRow, setCurrentRow, targetStatus } = useOrders()
 
   if (!currentRow) return null
 
