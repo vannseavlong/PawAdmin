@@ -1,7 +1,9 @@
 import {
   LayoutDashboard,
   ClipboardList,
+  ClipboardCheck,
   PawPrint,
+  Store,
   Users,
   Monitor,
   Bell,
@@ -49,6 +51,21 @@ export const sidebarData: SidebarData = {
           title: 'Users',
           url: '/users',
           icon: Users,
+        },
+      ],
+    },
+    {
+      title: 'Marketplace',
+      items: [
+        {
+          title: 'Merchant Applications',
+          url: '/merchant-applications',
+          icon: ClipboardCheck,
+        },
+        {
+          title: 'Shops',
+          url: '/shops',
+          icon: Store,
         },
       ],
     },

@@ -19,8 +19,10 @@ import { Route as errors401RouteImport } from './routes/(errors)/401'
 import { Route as authSignInRouteImport } from './routes/(auth)/sign-in'
 import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authenticated/settings/route'
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
+import { Route as AuthenticatedShopsIndexRouteImport } from './routes/_authenticated/shops/index'
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedOrdersIndexRouteImport } from './routes/_authenticated/orders/index'
+import { Route as AuthenticatedMerchantApplicationsIndexRouteImport } from './routes/_authenticated/merchant-applications/index'
 import { Route as AuthenticatedContentIndexRouteImport } from './routes/_authenticated/content/index'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
 import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_authenticated/settings/display'
@@ -78,6 +80,11 @@ const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
   path: '/users/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedShopsIndexRoute = AuthenticatedShopsIndexRouteImport.update({
+  id: '/shops/',
+  path: '/shops/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSettingsIndexRoute =
   AuthenticatedSettingsIndexRouteImport.update({
     id: '/',
@@ -88,6 +95,12 @@ const AuthenticatedOrdersIndexRoute =
   AuthenticatedOrdersIndexRouteImport.update({
     id: '/orders/',
     path: '/orders/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMerchantApplicationsIndexRoute =
+  AuthenticatedMerchantApplicationsIndexRouteImport.update({
+    id: '/merchant-applications/',
+    path: '/merchant-applications/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedContentIndexRoute =
@@ -142,8 +155,10 @@ export interface FileRoutesByFullPath {
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/content/': typeof AuthenticatedContentIndexRoute
+  '/merchant-applications/': typeof AuthenticatedMerchantApplicationsIndexRoute
   '/orders/': typeof AuthenticatedOrdersIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
+  '/shops/': typeof AuthenticatedShopsIndexRoute
   '/users/': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -160,8 +175,10 @@ export interface FileRoutesByTo {
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/content': typeof AuthenticatedContentIndexRoute
+  '/merchant-applications': typeof AuthenticatedMerchantApplicationsIndexRoute
   '/orders': typeof AuthenticatedOrdersIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
+  '/shops': typeof AuthenticatedShopsIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesById {
@@ -181,8 +198,10 @@ export interface FileRoutesById {
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/_authenticated/content/': typeof AuthenticatedContentIndexRoute
+  '/_authenticated/merchant-applications/': typeof AuthenticatedMerchantApplicationsIndexRoute
   '/_authenticated/orders/': typeof AuthenticatedOrdersIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
+  '/_authenticated/shops/': typeof AuthenticatedShopsIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRouteTypes {
@@ -202,8 +221,10 @@ export interface FileRouteTypes {
     | '/settings/display'
     | '/settings/notifications'
     | '/content/'
+    | '/merchant-applications/'
     | '/orders/'
     | '/settings/'
+    | '/shops/'
     | '/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -220,8 +241,10 @@ export interface FileRouteTypes {
     | '/settings/display'
     | '/settings/notifications'
     | '/content'
+    | '/merchant-applications'
     | '/orders'
     | '/settings'
+    | '/shops'
     | '/users'
   id:
     | '__root__'
@@ -240,8 +263,10 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/display'
     | '/_authenticated/settings/notifications'
     | '/_authenticated/content/'
+    | '/_authenticated/merchant-applications/'
     | '/_authenticated/orders/'
     | '/_authenticated/settings/'
+    | '/_authenticated/shops/'
     | '/_authenticated/users/'
   fileRoutesById: FileRoutesById
 }
@@ -327,6 +352,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/shops/': {
+      id: '/_authenticated/shops/'
+      path: '/shops'
+      fullPath: '/shops/'
+      preLoaderRoute: typeof AuthenticatedShopsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings/': {
       id: '/_authenticated/settings/'
       path: '/'
@@ -339,6 +371,13 @@ declare module '@tanstack/react-router' {
       path: '/orders'
       fullPath: '/orders/'
       preLoaderRoute: typeof AuthenticatedOrdersIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/merchant-applications/': {
+      id: '/_authenticated/merchant-applications/'
+      path: '/merchant-applications'
+      fullPath: '/merchant-applications/'
+      preLoaderRoute: typeof AuthenticatedMerchantApplicationsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/content/': {
@@ -414,7 +453,9 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
   AuthenticatedContentIndexRoute: typeof AuthenticatedContentIndexRoute
+  AuthenticatedMerchantApplicationsIndexRoute: typeof AuthenticatedMerchantApplicationsIndexRoute
   AuthenticatedOrdersIndexRoute: typeof AuthenticatedOrdersIndexRoute
+  AuthenticatedShopsIndexRoute: typeof AuthenticatedShopsIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
 }
 
@@ -423,7 +464,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
   AuthenticatedContentIndexRoute: AuthenticatedContentIndexRoute,
+  AuthenticatedMerchantApplicationsIndexRoute:
+    AuthenticatedMerchantApplicationsIndexRoute,
   AuthenticatedOrdersIndexRoute: AuthenticatedOrdersIndexRoute,
+  AuthenticatedShopsIndexRoute: AuthenticatedShopsIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
 }
 
