@@ -51,6 +51,7 @@ vi.mock('@/stores/auth-store', () => ({
 vi.mock('@/lib/api-client', () => ({
   ApiError: MockApiError,
   apiClient: { post: (...args: unknown[]) => postMock(...args) },
+  API_BASE_URL: 'http://localhost:3000',
 }))
 
 vi.mock('sonner', () => ({
