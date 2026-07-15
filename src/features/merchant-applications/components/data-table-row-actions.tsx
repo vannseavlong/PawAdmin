@@ -1,6 +1,6 @@
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { type Row } from '@tanstack/react-table'
-import { Check, Eye, X } from 'lucide-react'
+import { Check, Eye, RefreshCw, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -20,6 +20,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { setOpen, setCurrentRow } = useMerchantApplications()
   const application = row.original
   const isPending = application.status === 'pending'
+  const isApproved = application.status === 'approved'
 
   return (
     <DropdownMenu modal={false}>
@@ -63,6 +64,20 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             >
               Reject
               <X className='ms-auto size-4' />
+            </DropdownMenuItem>
+          </>
+        )}
+        {isApproved && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                setCurrentRow(application)
+                setOpen('resend')
+              }}
+            >
+              Resend invite
+              <RefreshCw className='ms-auto size-4' />
             </DropdownMenuItem>
           </>
         )}

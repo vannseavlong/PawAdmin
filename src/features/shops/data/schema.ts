@@ -7,17 +7,13 @@ const shopStatusSchema = z.union([
 ])
 export type ShopStatus = z.infer<typeof shopStatusSchema>
 
-// Speculative shape for the multi-store pivot's `shops` table — see
-// admin_portal/TODO.md's "Planned: Multi-store / marketplace pivot" Phase 1.
-// Not yet built in `paw_sheetDB` / documented in ADMIN_API.md; `owner_name`/
-// `owner_email` are assumed denormalized onto the list response the same way
-// `/admin/bookings` enriches bookings with `user_name`/`user_email` — align
-// with the real response once `GET /admin/shops` ships.
+// Matches `schemas/admin/shops.ts` / `GET /admin/shops` in paw_sheetDB (see
+// ADMIN_API.md § 5). `owner_user_id` is blank until the shop reaches `active`
+// (the merchant redeemed their invite) — there is no owner-name/email
+// denormalization on this endpoint, unlike `/admin/bookings`'s user_name/user_email.
 const _shopSchema = z.object({
   shop_id: z.string(),
   owner_user_id: z.string(),
-  owner_name: z.string().optional(),
-  owner_email: z.string().optional(),
   name: z.string(),
   description: z.string().optional(),
   logo: z.string().optional(),
@@ -30,9 +26,6 @@ export type Shop = z.infer<typeof _shopSchema>
 
 export const shopsListResponseSchema = z.object({
   shops: z.array(_shopSchema),
-  total: z.number(),
-  limit: z.number(),
-  offset: z.number(),
 })
 export type ShopsListResponse = z.infer<typeof shopsListResponseSchema>
 

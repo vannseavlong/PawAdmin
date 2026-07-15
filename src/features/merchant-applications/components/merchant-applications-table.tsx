@@ -74,7 +74,7 @@ export function MerchantApplicationsTable({
       return (
         application.shop_name.toLowerCase().includes(term) ||
         application.applicant_name.toLowerCase().includes(term) ||
-        application.applicant_email.toLowerCase().includes(term)
+        application.contact_email.toLowerCase().includes(term)
       )
     },
     onPaginationChange,

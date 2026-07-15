@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
-import { formatDate, shopTypeLabels, statusLabels, statusStyles } from '../data/data'
+import { formatDate, statusLabels, statusStyles } from '../data/data'
 import { type MerchantApplication } from '../data/schema'
 import { DataTableRowActions } from './data-table-row-actions'
 
@@ -22,7 +22,7 @@ export const merchantApplicationsColumns: ColumnDef<MerchantApplication>[] = [
   },
   {
     id: 'applicant',
-    accessorFn: (row) => `${row.applicant_name} ${row.applicant_email}`,
+    accessorFn: (row) => `${row.applicant_name} ${row.contact_email}`,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Applicant' />
     ),
@@ -30,30 +30,20 @@ export const merchantApplicationsColumns: ColumnDef<MerchantApplication>[] = [
       <div className='flex flex-col'>
         <span>{row.original.applicant_name}</span>
         <span className='text-xs text-muted-foreground'>
-          {row.original.applicant_email}
+          {row.original.contact_email}
         </span>
       </div>
     ),
     enableSorting: false,
   },
   {
-    accessorKey: 'shop_type',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Sells' />
-    ),
-    cell: ({ row }) => (
-      <span className='text-sm'>{shopTypeLabels[row.original.shop_type]}</span>
-    ),
-    enableSorting: false,
-  },
-  {
-    accessorKey: 'submitted_at',
+    accessorKey: '_created_at',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Submitted' />
     ),
     cell: ({ row }) => (
       <div className='text-nowrap'>
-        {formatDate(row.original.submitted_at)}
+        {formatDate(row.original._created_at)}
       </div>
     ),
   },

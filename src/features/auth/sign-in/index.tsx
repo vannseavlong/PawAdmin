@@ -1,4 +1,4 @@
-import { useSearch } from '@tanstack/react-router'
+import { Link, useSearch } from '@tanstack/react-router'
 import { AuthLayout } from '../auth-layout'
 import { UserAuthForm } from './components/user-auth-form'
 
@@ -22,6 +22,16 @@ export function SignIn() {
         By continuing, you agree to our Terms of Use and Privacy Policy.
         <br />
         Access is restricted to authorised admin accounts only.
+      </p>
+
+      <p className='mt-4 text-center text-sm text-muted-foreground'>
+        Own a pet business?{' '}
+        <Link
+          to='/register'
+          className='text-primary underline-offset-4 hover:underline'
+        >
+          Apply to become a merchant
+        </Link>
       </p>
     </AuthLayout>
   )

@@ -1,4 +1,4 @@
-import { type ApplicationStatus, type ShopType } from './schema'
+import { type ApplicationStatus } from './schema'
 
 export const statusStyles = new Map<ApplicationStatus, string>([
   [
@@ -25,12 +25,6 @@ export const statusLabels: Record<ApplicationStatus, string> = {
   pending: 'Pending',
   approved: 'Approved',
   rejected: 'Rejected',
-}
-
-export const shopTypeLabels: Record<ShopType, string> = {
-  service: 'Services',
-  product: 'Products',
-  both: 'Services & products',
 }
 
 export function formatDate(value: string) {

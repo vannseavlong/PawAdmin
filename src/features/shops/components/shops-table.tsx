@@ -69,8 +69,8 @@ export function ShopsTable({ data, search, navigate }: DataTableProps) {
       const shop = row.original as Shop
       return (
         shop.name.toLowerCase().includes(term) ||
-        (shop.owner_name ?? '').toLowerCase().includes(term) ||
-        (shop.owner_email ?? '').toLowerCase().includes(term)
+        (shop.contact_email ?? '').toLowerCase().includes(term) ||
+        shop.owner_user_id.toLowerCase().includes(term)
       )
     },
     onPaginationChange,

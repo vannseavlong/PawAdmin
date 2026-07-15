@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { formatDate, shopTypeLabels, statusLabels, statusStyles } from '../data/data'
+import { formatDate, statusLabels, statusStyles } from '../data/data'
 import { type MerchantApplication } from '../data/schema'
 
 type MerchantApplicationsDetailDialogProps = {
@@ -49,14 +49,10 @@ export function MerchantApplicationsDetailDialog({
         </DialogHeader>
         <dl className='divide-y'>
           <Field label='Applicant' value={currentRow.applicant_name} />
-          <Field label='Email' value={currentRow.applicant_email} />
-          <Field label='Phone' value={currentRow.phone || '—'} />
-          <Field label='Sells' value={shopTypeLabels[currentRow.shop_type]} />
+          <Field label='Email' value={currentRow.contact_email} />
+          <Field label='Phone' value={currentRow.contact_phone || '—'} />
           <Field label='Description' value={currentRow.description || '—'} />
-          <Field label='Submitted' value={formatDate(currentRow.submitted_at)} />
-          {currentRow.reviewed_at && (
-            <Field label='Reviewed' value={formatDate(currentRow.reviewed_at)} />
-          )}
+          <Field label='Submitted' value={formatDate(currentRow._created_at)} />
           {currentRow.status === 'rejected' && (
             <Field
               label='Rejection reason'

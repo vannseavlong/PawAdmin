@@ -19,17 +19,17 @@ export const shopsColumns: ColumnDef<Shop>[] = [
     enableHiding: false,
   },
   {
-    id: 'owner',
-    accessorFn: (row) => `${row.owner_name ?? ''} ${row.owner_email ?? ''}`,
+    id: 'contact',
+    accessorFn: (row) => `${row.contact_email ?? ''} ${row.contact_phone ?? ''}`,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Owner' />
+      <DataTableColumnHeader column={column} title='Contact' />
     ),
     cell: ({ row }) => (
       <div className='flex flex-col'>
-        <span>{row.original.owner_name || '—'}</span>
-        {row.original.owner_email && (
+        <span>{row.original.contact_email || '—'}</span>
+        {row.original.contact_phone && (
           <span className='text-xs text-muted-foreground'>
-            {row.original.owner_email}
+            {row.original.contact_phone}
           </span>
         )}
       </div>
@@ -37,15 +37,19 @@ export const shopsColumns: ColumnDef<Shop>[] = [
     enableSorting: false,
   },
   {
-    accessorKey: 'contact_phone',
+    id: 'owner',
+    accessorKey: 'owner_user_id',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Contact' />
+      <DataTableColumnHeader column={column} title='Owner' />
     ),
-    cell: ({ row }) => (
-      <span className='text-sm text-muted-foreground'>
-        {row.getValue('contact_phone') || '—'}
-      </span>
-    ),
+    cell: ({ row }) =>
+      row.original.owner_user_id ? (
+        <span className='font-mono text-xs'>{row.original.owner_user_id}</span>
+      ) : (
+        <span className='text-xs text-muted-foreground'>
+          Invite not yet redeemed
+        </span>
+      ),
     enableSorting: false,
   },
   {

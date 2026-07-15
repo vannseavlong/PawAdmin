@@ -41,3 +41,11 @@ export function rejectMerchantApplication(
     { reason }
   )
 }
+
+export function resendMerchantApplicationInvite(applicationId: string) {
+  return apiClient.post<{
+    application: MerchantApplication
+    shop: { shop_id: string; status: string }
+    invite: { expires_at: string }
+  }>(`/admin/merchant-applications/${applicationId}/resend-invite`)
+}

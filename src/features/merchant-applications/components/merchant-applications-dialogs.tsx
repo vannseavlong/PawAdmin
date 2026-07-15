@@ -2,6 +2,7 @@ import { MerchantApplicationsApproveDialog } from './merchant-applications-appro
 import { MerchantApplicationsDetailDialog } from './merchant-applications-detail-dialog'
 import { useMerchantApplications } from './merchant-applications-provider'
 import { MerchantApplicationsRejectDialog } from './merchant-applications-reject-dialog'
+import { MerchantApplicationsResendDialog } from './merchant-applications-resend-dialog'
 
 export function MerchantApplicationsDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } =
@@ -36,6 +37,16 @@ export function MerchantApplicationsDialogs() {
         open={open === 'reject'}
         onOpenChange={() => {
           setOpen('reject')
+          setTimeout(() => setCurrentRow(null), 500)
+        }}
+        currentRow={currentRow}
+      />
+
+      <MerchantApplicationsResendDialog
+        key={`application-resend-${currentRow.application_id}`}
+        open={open === 'resend'}
+        onOpenChange={() => {
+          setOpen('resend')
           setTimeout(() => setCurrentRow(null), 500)
         }}
         currentRow={currentRow}

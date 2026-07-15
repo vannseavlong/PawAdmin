@@ -2,7 +2,11 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type MerchantApplication } from '../data/schema'
 
-type MerchantApplicationsDialogType = 'detail' | 'approve' | 'reject'
+type MerchantApplicationsDialogType =
+  | 'detail'
+  | 'approve'
+  | 'reject'
+  | 'resend'
 
 type MerchantApplicationsContextType = {
   open: MerchantApplicationsDialogType | null
