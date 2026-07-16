@@ -1,5 +1,6 @@
 import z from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
+import { requireAdminRole } from '@/lib/route-guards'
 import { Content } from '@/features/content'
 
 const contentSearchSchema = z.object({
@@ -15,5 +16,6 @@ const contentSearchSchema = z.object({
 
 export const Route = createFileRoute('/_authenticated/content/')({
   validateSearch: contentSearchSchema,
+  beforeLoad: requireAdminRole,
   component: Content,
 })

@@ -23,6 +23,8 @@ import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedShopsIndexRouteImport } from './routes/_authenticated/shops/index'
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedOrdersIndexRouteImport } from './routes/_authenticated/orders/index'
+import { Route as AuthenticatedMyShopIndexRouteImport } from './routes/_authenticated/my-shop/index'
+import { Route as AuthenticatedMyCatalogIndexRouteImport } from './routes/_authenticated/my-catalog/index'
 import { Route as AuthenticatedMerchantApplicationsIndexRouteImport } from './routes/_authenticated/merchant-applications/index'
 import { Route as AuthenticatedContentIndexRouteImport } from './routes/_authenticated/content/index'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
@@ -104,6 +106,18 @@ const AuthenticatedOrdersIndexRoute =
     path: '/orders/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedMyShopIndexRoute =
+  AuthenticatedMyShopIndexRouteImport.update({
+    id: '/my-shop/',
+    path: '/my-shop/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMyCatalogIndexRoute =
+  AuthenticatedMyCatalogIndexRouteImport.update({
+    id: '/my-catalog/',
+    path: '/my-catalog/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedMerchantApplicationsIndexRoute =
   AuthenticatedMerchantApplicationsIndexRouteImport.update({
     id: '/merchant-applications/',
@@ -170,6 +184,8 @@ export interface FileRoutesByFullPath {
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/content/': typeof AuthenticatedContentIndexRoute
   '/merchant-applications/': typeof AuthenticatedMerchantApplicationsIndexRoute
+  '/my-catalog/': typeof AuthenticatedMyCatalogIndexRoute
+  '/my-shop/': typeof AuthenticatedMyShopIndexRoute
   '/orders/': typeof AuthenticatedOrdersIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/shops/': typeof AuthenticatedShopsIndexRoute
@@ -192,6 +208,8 @@ export interface FileRoutesByTo {
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/content': typeof AuthenticatedContentIndexRoute
   '/merchant-applications': typeof AuthenticatedMerchantApplicationsIndexRoute
+  '/my-catalog': typeof AuthenticatedMyCatalogIndexRoute
+  '/my-shop': typeof AuthenticatedMyShopIndexRoute
   '/orders': typeof AuthenticatedOrdersIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/shops': typeof AuthenticatedShopsIndexRoute
@@ -217,6 +235,8 @@ export interface FileRoutesById {
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/_authenticated/content/': typeof AuthenticatedContentIndexRoute
   '/_authenticated/merchant-applications/': typeof AuthenticatedMerchantApplicationsIndexRoute
+  '/_authenticated/my-catalog/': typeof AuthenticatedMyCatalogIndexRoute
+  '/_authenticated/my-shop/': typeof AuthenticatedMyShopIndexRoute
   '/_authenticated/orders/': typeof AuthenticatedOrdersIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/shops/': typeof AuthenticatedShopsIndexRoute
@@ -242,6 +262,8 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/content/'
     | '/merchant-applications/'
+    | '/my-catalog/'
+    | '/my-shop/'
     | '/orders/'
     | '/settings/'
     | '/shops/'
@@ -264,6 +286,8 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/content'
     | '/merchant-applications'
+    | '/my-catalog'
+    | '/my-shop'
     | '/orders'
     | '/settings'
     | '/shops'
@@ -288,6 +312,8 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/notifications'
     | '/_authenticated/content/'
     | '/_authenticated/merchant-applications/'
+    | '/_authenticated/my-catalog/'
+    | '/_authenticated/my-shop/'
     | '/_authenticated/orders/'
     | '/_authenticated/settings/'
     | '/_authenticated/shops/'
@@ -406,6 +432,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrdersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/my-shop/': {
+      id: '/_authenticated/my-shop/'
+      path: '/my-shop'
+      fullPath: '/my-shop/'
+      preLoaderRoute: typeof AuthenticatedMyShopIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/my-catalog/': {
+      id: '/_authenticated/my-catalog/'
+      path: '/my-catalog'
+      fullPath: '/my-catalog/'
+      preLoaderRoute: typeof AuthenticatedMyCatalogIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/merchant-applications/': {
       id: '/_authenticated/merchant-applications/'
       path: '/merchant-applications'
@@ -494,6 +534,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
   AuthenticatedContentIndexRoute: typeof AuthenticatedContentIndexRoute
   AuthenticatedMerchantApplicationsIndexRoute: typeof AuthenticatedMerchantApplicationsIndexRoute
+  AuthenticatedMyCatalogIndexRoute: typeof AuthenticatedMyCatalogIndexRoute
+  AuthenticatedMyShopIndexRoute: typeof AuthenticatedMyShopIndexRoute
   AuthenticatedOrdersIndexRoute: typeof AuthenticatedOrdersIndexRoute
   AuthenticatedShopsIndexRoute: typeof AuthenticatedShopsIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
@@ -506,6 +548,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedContentIndexRoute: AuthenticatedContentIndexRoute,
   AuthenticatedMerchantApplicationsIndexRoute:
     AuthenticatedMerchantApplicationsIndexRoute,
+  AuthenticatedMyCatalogIndexRoute: AuthenticatedMyCatalogIndexRoute,
+  AuthenticatedMyShopIndexRoute: AuthenticatedMyShopIndexRoute,
   AuthenticatedOrdersIndexRoute: AuthenticatedOrdersIndexRoute,
   AuthenticatedShopsIndexRoute: AuthenticatedShopsIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,

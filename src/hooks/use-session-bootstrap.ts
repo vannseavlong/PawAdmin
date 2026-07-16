@@ -23,8 +23,8 @@ export function useSessionBootstrap() {
     apiClient
       .get<{ user: AuthUser }>('/user/auth/me')
       .then(({ user: fetchedUser }) => {
-        if (fetchedUser.role !== 'admin') {
-          toast.error('This account does not have admin access to Paw Admin.')
+        if (fetchedUser.role !== 'admin' && fetchedUser.role !== 'merchant') {
+          toast.error('This account does not have access to Paw Admin.')
           reset()
           navigate({ to: '/sign-in', replace: true })
           return

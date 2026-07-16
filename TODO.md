@@ -259,18 +259,41 @@ Naming: role is **"Merchant"** (shop-owner / service-provider role, distinct fro
       logged per `email.service.ts`'s non-production behavior), drove `/invite/:token`
       with it, confirmed the resulting `users`/`credentials`/`shops` rows, zero console
       errors — then deleted all scratch rows/users/invite after.
-- [ ] Merchant dashboard, scoped to the merchant's own `shop_id`: manage their catalog
-      (services and/or products) and basic shop configuration (hours, description, logo,
-      contact). Reuse the existing route-guard pattern (`_authenticated`), but every
-      query/mutation must be scoped by the merchant's `shop_id` — never trust a client-
-      supplied `shop_id`. **Not started — needs backend work first:** no
-      `GET/PATCH /merchant/shop` endpoint exists yet (only `/merchant/catalog-items` is
-      built), and the frontend `AuthUser`/`useAuthStore` has no `shop_id` field yet either
-      (a plain `POST /user/auth/login` for a merchant account only puts `shop_id` in the
-      JWT, never on the returned `user` object — the frontend never decodes JWTs today).
-      Deliberately deferred this pass: `backend_paw` has another active session with
-      uncommitted changes in it right now, so backend-repo touches were kept to the one
-      `.env` line above.
+- [x] Merchant dashboard, scoped to the merchant's own `shop_id`. Built as two coordinated
+      workstreams (backend + frontend) against a pre-agreed contract:
+      - **Backend:** new `GET/PATCH /merchant/shop` (`src/routes/merchant/shop.routes.ts` +
+        controller + `src/services/merchant/shop.service.ts`), scoped to the caller's
+        `shop_id` from the JWT via the same `requireShopId` guard `/merchant/catalog-items`
+        uses. `PATCH` accepts `name, description, logo, contact_email, contact_phone,
+        hours` — `status` is silently ignored (stays admin-only via `/admin/shops/:id`).
+        `login()`/`getMe()` in `auth.service.ts` now also put `shop_id` directly on the
+        returned `user` object for `role: "merchant"` (previously JWT-only), since the
+        frontend never decodes JWTs. 8 new tests, 78/78 passing. Documented in
+        `ADMIN_API.md`. Live-verified against real Google Sheets with two scratch
+        merchant accounts confirming cross-shop isolation (a body-supplied `shop_id`
+        can't leak into another shop's data); scratch data cleaned up after.
+      - **Frontend:** `src/features/my-shop/` (view/edit shop config) and
+        `src/features/my-catalog/` (full CRUD table for the merchant's own catalog items,
+        mirroring `src/features/content/`'s dialog/table/provider split) under new
+        `/my-shop` and `/my-catalog` routes. `AuthUser.shop_id` added to the auth store.
+        `src/components/layout/data/sidebar-data.ts` is now `getSidebarData(role)` —
+        merchants see only My Shop / My Catalog / Settings, no Dashboard (it's built
+        entirely from `/admin/*` stats a merchant JWT 403s on) or the admin-only sections.
+        New `src/lib/route-guards.ts` (`requireAdminRole`/`requireMerchantRole`) bounces
+        each role away from the other's routes instead of hitting a raw 403.
+        **Unplanned but required fix caught along the way:** `user-auth-form.tsx` and
+        `use-session-bootstrap.ts` both hard-blocked any non-`admin` role at login/session
+        restore — a merchant account could never have reached this portal at all before
+        this fix (loosened to accept `admin` OR `merchant`). `pnpm lint`/`pnpm build`
+        clean. Live-verified full `/merchant/catalog-items` CRUD and `GET/PATCH
+        /merchant/shop` against the real backend via a scratch apply→approve→invite→
+        accept flow; scratch accounts deactivated after.
+      - Found again during this pass: the long-running `pnpm dev` process on port 3000
+        was stale (pre-dated these changes) — same class of orphaned-tsx-watch-worker
+        issue documented earlier in this file. Restarted it; confirmed `/merchant/shop`
+        and `/merchant/catalog-items` both respond correctly (401, not 404) against the
+        fresh process. Several other orphaned `tsx watch` processes from earlier sessions
+        were left running at the user's request (only the port-3000 one was restarted).
 
 ### Phase 4 — Mobile app (`pet_carrying_app`)
 

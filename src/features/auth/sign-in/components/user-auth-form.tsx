@@ -62,8 +62,8 @@ export function UserAuthForm({
         data
       )
 
-      if (user.role !== 'admin') {
-        toast.error('This account does not have admin access to Paw Admin.')
+      if (user.role !== 'admin' && user.role !== 'merchant') {
+        toast.error('This account does not have access to Paw Admin.')
         return
       }
 

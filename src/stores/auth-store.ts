@@ -6,7 +6,8 @@ const USER_COOKIE = 'paw_admin_user'
 
 /**
  * Shape of the `user` object returned by `POST /user/auth/login` (see
- * ADMIN_API.md / FLUTTER_GUIDE.md) for an account with `role: "admin"`.
+ * ADMIN_API.md / FLUTTER_GUIDE.md) for an account with `role: "admin"` or
+ * `role: "merchant"`.
  */
 export interface AuthUser {
   user_id: string
@@ -17,6 +18,8 @@ export interface AuthUser {
   auth_provider?: string
   actor_sheet_id?: string
   status?: string
+  /** Only present when `role === 'merchant'` — scopes `/merchant/*` requests. */
+  shop_id?: string
 }
 
 interface AuthState {

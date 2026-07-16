@@ -1,5 +1,6 @@
 import z from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
+import { requireAdminRole } from '@/lib/route-guards'
 import { MerchantApplications } from '@/features/merchant-applications'
 
 const merchantApplicationsSearchSchema = z.object({
@@ -20,5 +21,6 @@ const merchantApplicationsSearchSchema = z.object({
 
 export const Route = createFileRoute('/_authenticated/merchant-applications/')({
   validateSearch: merchantApplicationsSearchSchema,
+  beforeLoad: requireAdminRole,
   component: MerchantApplications,
 })

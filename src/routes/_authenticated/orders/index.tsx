@@ -1,5 +1,6 @@
 import z from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
+import { requireAdminRole } from '@/lib/route-guards'
 import { Orders } from '@/features/orders'
 
 const ordersSearchSchema = z.object({
@@ -22,5 +23,6 @@ const ordersSearchSchema = z.object({
 
 export const Route = createFileRoute('/_authenticated/orders/')({
   validateSearch: ordersSearchSchema,
+  beforeLoad: requireAdminRole,
   component: Orders,
 })
