@@ -1,16 +1,14 @@
 import { z } from 'zod'
 
-const itemTypeSchema = z.union([z.literal('service'), z.literal('product')])
-export type CatalogItemType = z.infer<typeof itemTypeSchema>
-
-// Matches the `CatalogItem` object documented in ADMIN_API.md § 6
-// (`/merchant/catalog-items`) — services or physical products a shop sells.
-// `shop_id` is always the caller's own shop, set server-side; never sent by
-// the client.
+// Matches the `CatalogItem` object documented in ADMIN_API.md § 6, scoped
+// client-side to `item_type: 'service'` rows only — physical products live
+// in My Products (`src/features/my-products/data/schema.ts`), over the same
+// underlying table. `shop_id` is always the caller's own shop, set
+// server-side; never sent by the client.
 const _catalogItemSchema = z.object({
   item_id: z.string(),
   shop_id: z.string(),
-  item_type: itemTypeSchema,
+  item_type: z.literal('service'),
   name: z.string(),
   description: z.string().optional().default(''),
   price_from: z.number(),
@@ -19,10 +17,7 @@ const _catalogItemSchema = z.object({
   category: z.string().optional().default(''),
   active: z.boolean(),
   sort_order: z.number(),
-  // Optional — absent/undefined means "unlimited". quantity applies to
-  // item_type: 'product' (decremented per order, blocks at 0); daily_capacity
-  // applies to item_type: 'service' (caps concurrent overlapping bookings).
-  quantity: z.number().optional(),
+  // Optional — absent/undefined means "unlimited" concurrent bookings.
   daily_capacity: z.number().optional(),
 })
 export type CatalogItem = z.infer<typeof _catalogItemSchema>

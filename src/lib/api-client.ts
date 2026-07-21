@@ -28,6 +28,10 @@ type RequestOptions = {
   headers?: Record<string, string>
 }
 
+function isFormData(body: unknown): body is FormData {
+  return typeof FormData !== 'undefined' && body instanceof FormData
+}
+
 function buildUrl(path: string, query?: Record<string, QueryValue>): string {
   const url = new URL(path.replace(/^\//, ''), API_BASE_URL + '/')
   if (query) {
@@ -45,15 +49,18 @@ async function request<T>(
   { method = 'GET', body, query, headers }: RequestOptions = {}
 ): Promise<T> {
   const token = useAuthStore.getState().auth.accessToken
+  const formData = isFormData(body)
 
   const response = await fetch(buildUrl(path, query), {
     method,
     headers: {
-      'Content-Type': 'application/json',
+      // Omit Content-Type for FormData — the browser sets the multipart
+      // boundary itself; setting it manually breaks the parse on the server.
+      ...(formData ? {} : { 'Content-Type': 'application/json' }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    body: formData ? body : body !== undefined ? JSON.stringify(body) : undefined,
   })
 
   if (response.status === 401 || response.status === 403) {
@@ -97,4 +104,10 @@ export const apiClient = {
   patch: <T>(path: string, body?: unknown) =>
     request<T>(path, { method: 'PATCH', body }),
   delete: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
+  // FormData variants for endpoints that accept an optional image upload
+  // alongside other fields (multipart/form-data instead of JSON).
+  postForm: <T>(path: string, body: FormData) =>
+    request<T>(path, { method: 'POST', body }),
+  patchForm: <T>(path: string, body: FormData) =>
+    request<T>(path, { method: 'PATCH', body }),
 }

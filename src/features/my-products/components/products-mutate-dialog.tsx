@@ -1,9 +1,12 @@
+import { useRef, useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { ImagePlus, PawPrint, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { handleServerError } from '@/lib/handle-server-error'
+import { toDisplayImageUrl } from '@/lib/drive-image'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -24,42 +27,46 @@ import {
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
-import { type CatalogItem } from '../data/schema'
-import { createCatalogItem, updateCatalogItem } from '../data/catalog-items-api'
+import { type Product } from '../data/schema'
+import { createProduct, updateProduct } from '../data/products-api'
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required.'),
   description: z.string().optional(),
   price_from: z.coerce.number().min(0, 'Price must be 0 or more.'),
   category: z.string().optional(),
-  icon: z.string().optional(),
-  color: z.string().optional(),
   active: z.boolean(),
-  sort_order: z.coerce.number().int().min(0).optional(),
-  // Left blank means "unlimited" concurrent bookings.
-  daily_capacity: z.coerce.number().min(0).optional(),
+  // Left blank means "unlimited" stock.
+  quantity: z.coerce.number().min(0).optional(),
 })
-// `price_from`/`sort_order` are coerced from the raw string an <input> gives
+// `price_from`/`quantity` are coerced from the raw string an <input> gives
 // us, so the form's field values (input) differ from the submitted payload
 // (output) — react-hook-form needs both generics to type-check the resolver.
-type CatalogItemFormInput = z.input<typeof formSchema>
-type CatalogItemForm = z.output<typeof formSchema>
+type ProductFormInput = z.input<typeof formSchema>
+type ProductForm = z.output<typeof formSchema>
 
-type CatalogItemsMutateDialogProps = {
-  currentRow?: CatalogItem
+// undefined = unchanged, null = cleared, File = a newly picked file to upload.
+type ImageEdit = File | null | undefined
+
+type ProductsMutateDialogProps = {
+  currentRow?: Product
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function CatalogItemsMutateDialog({
+export function ProductsMutateDialog({
   currentRow,
   open,
   onOpenChange,
-}: CatalogItemsMutateDialogProps) {
+}: ProductsMutateDialogProps) {
   const isEdit = !!currentRow
   const queryClient = useQueryClient()
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [imageEdit, setImageEdit] = useState<ImageEdit>(undefined)
+  const currentImage = toDisplayImageUrl(currentRow?.image)
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(currentImage)
 
-  const form = useForm<CatalogItemFormInput, unknown, CatalogItemForm>({
+  const form = useForm<ProductFormInput, unknown, ProductForm>({
     resolver: zodResolver(formSchema),
     defaultValues: isEdit
       ? {
@@ -67,67 +74,123 @@ export function CatalogItemsMutateDialog({
           description: currentRow.description,
           price_from: currentRow.price_from,
           category: currentRow.category,
-          icon: currentRow.icon,
-          color: currentRow.color,
           active: currentRow.active,
-          sort_order: currentRow.sort_order,
-          daily_capacity: currentRow.daily_capacity,
+          quantity: currentRow.quantity,
         }
       : {
           name: '',
           description: '',
           price_from: 0,
           category: '',
-          icon: '',
-          color: '',
           active: true,
-          sort_order: 0,
         },
   })
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (values: CatalogItemForm) =>
-      isEdit
-        ? updateCatalogItem(currentRow.item_id, values)
-        : createCatalogItem(values),
+    mutationFn: (values: ProductForm) => {
+      const payload = {
+        ...values,
+        image: imageEdit === undefined ? undefined : (imageEdit ?? ''),
+      }
+      return isEdit
+        ? updateProduct(currentRow.item_id, payload)
+        : createProduct(payload)
+    },
     onSuccess: () => {
-      toast.success(isEdit ? 'Item updated.' : 'Item created.')
-      queryClient.invalidateQueries({ queryKey: ['my-catalog-items'] })
+      toast.success(isEdit ? 'Product updated.' : 'Product created.')
+      queryClient.invalidateQueries({ queryKey: ['my-products'] })
       form.reset()
+      setImageEdit(undefined)
+      setPreviewUrl(currentImage)
       onOpenChange(false)
     },
     onError: (error) => handleServerError(error),
   })
 
-  const onSubmit = (values: CatalogItemForm) => mutate(values)
+  const onSubmit = (values: ProductForm) => mutate(values)
 
   return (
     <Dialog
       open={open}
       onOpenChange={(state) => {
         form.reset()
+        setImageEdit(undefined)
+        setPreviewUrl(currentImage)
         onOpenChange(state)
       }}
     >
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader className='text-start'>
           <DialogTitle>
-            {isEdit ? 'Edit Service' : 'Add New Service'}
+            {isEdit ? 'Edit Product' : 'Add New Product'}
           </DialogTitle>
           <DialogDescription>
             {isEdit
-              ? 'Update this service here.'
-              : 'Create a new service your shop offers.'}{' '}
+              ? 'Update this pet, accessory, or other item here.'
+              : 'Add a pet, accessory, feed, or other physical item your shop sells.'}{' '}
             Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <div className='h-105 w-[calc(100%+0.75rem)] overflow-y-auto py-1 pe-3'>
           <Form {...form}>
             <form
-              id='catalog-item-form'
+              id='product-form'
               onSubmit={form.handleSubmit(onSubmit)}
               className='space-y-4 px-0.5'
             >
+              <div className='flex items-center gap-3'>
+                <div className='flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-md border bg-muted'>
+                  {previewUrl ? (
+                    <img
+                      src={previewUrl}
+                      alt=''
+                      className='h-full w-full object-cover'
+                    />
+                  ) : (
+                    <PawPrint className='size-8 text-muted-foreground' />
+                  )}
+                </div>
+                <div className='flex flex-col items-start gap-1'>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    size='sm'
+                    onClick={() => inputRef.current?.click()}
+                  >
+                    <ImagePlus />
+                    Upload image
+                  </Button>
+                  {previewUrl && (
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      size='sm'
+                      className='text-muted-foreground'
+                      onClick={() => {
+                        setPreviewUrl(undefined)
+                        setImageEdit(null)
+                      }}
+                    >
+                      <X /> Remove
+                    </Button>
+                  )}
+                  <input
+                    ref={inputRef}
+                    type='file'
+                    accept='image/jpeg,image/png,image/webp'
+                    className='hidden'
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) {
+                        setPreviewUrl(URL.createObjectURL(file))
+                        setImageEdit(file)
+                      }
+                      e.target.value = ''
+                    }}
+                  />
+                </div>
+              </div>
+
               <FormField
                 control={form.control}
                 name='name'
@@ -136,7 +199,7 @@ export function CatalogItemsMutateDialog({
                     <FormLabel className='col-span-2 text-end'>Name</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder='Mobile Bath & Groom'
+                        placeholder='Golden Retriever Puppy'
                         className='col-span-4'
                         autoComplete='off'
                         {...field}
@@ -156,7 +219,7 @@ export function CatalogItemsMutateDialog({
                     </FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder='At your door, 45 minutes.'
+                        placeholder='8 weeks old, vaccinated, microchipped.'
                         className='col-span-4 resize-none'
                         {...field}
                       />
@@ -171,7 +234,7 @@ export function CatalogItemsMutateDialog({
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
                     <FormLabel className='col-span-2 text-end'>
-                      Price from
+                      Price
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -197,7 +260,7 @@ export function CatalogItemsMutateDialog({
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder='grooming'
+                        placeholder='Pet, Accessory, Feed, Toy…'
                         className='col-span-4'
                         {...field}
                       />
@@ -208,79 +271,11 @@ export function CatalogItemsMutateDialog({
               />
               <FormField
                 control={form.control}
-                name='icon'
-                render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>Icon</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='spray_bottle'
-                        className='col-span-4'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className='col-span-4 col-start-3' />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='color'
-                render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>Color</FormLabel>
-                    <FormControl>
-                      <div className='col-span-4 flex items-center gap-2'>
-                        <input
-                          type='color'
-                          value={
-                            /^#[0-9a-fA-F]{6}$/.test(field.value ?? '')
-                              ? field.value
-                              : '#D6EAE4'
-                          }
-                          onChange={(e) => field.onChange(e.target.value)}
-                          className='h-9 w-10 shrink-0 cursor-pointer rounded border'
-                        />
-                        <Input
-                          placeholder='#D6EAE4'
-                          value={field.value}
-                          onChange={field.onChange}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage className='col-span-4 col-start-3' />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='sort_order'
+                name='quantity'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
                     <FormLabel className='col-span-2 text-end'>
-                      Sort order
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type='number'
-                        min={0}
-                        step='1'
-                        className='col-span-4'
-                        {...field}
-                        value={field.value as string | number}
-                      />
-                    </FormControl>
-                    <FormMessage className='col-span-4 col-start-3' />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='daily_capacity'
-                render={({ field }) => (
-                  <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>
-                      Daily capacity
+                      Stock quantity
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -318,7 +313,7 @@ export function CatalogItemsMutateDialog({
           </Form>
         </div>
         <DialogFooter>
-          <Button type='submit' form='catalog-item-form' disabled={isPending}>
+          <Button type='submit' form='product-form' disabled={isPending}>
             Save changes
           </Button>
         </DialogFooter>

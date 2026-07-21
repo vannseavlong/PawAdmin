@@ -1,16 +1,18 @@
 import { apiClient } from '@/lib/api-client'
-import { type CatalogItem, type CatalogItemType } from './schema'
+import { type CatalogItem } from './schema'
 
 export type CatalogItemFilters = {
-  item_type?: CatalogItemType
   active?: boolean
 }
 
-// `/merchant/catalog-items` (ADMIN_API.md § 6) — always scoped server-side to
-// the caller's own shop from the JWT. Never send a `shop_id` here.
+// `/merchant/catalog-items?item_type=service` (ADMIN_API.md § 6) — this
+// feature now only manages services; physical products live in My Products
+// (`src/features/my-products/`), scoped to `item_type: 'product'` over the
+// same underlying table. Always scoped server-side to the caller's own shop
+// from the JWT — never send a `shop_id` here.
 export function fetchCatalogItems(filters: CatalogItemFilters = {}) {
   return apiClient.get<{ items: CatalogItem[] }>('/merchant/catalog-items', {
-    item_type: filters.item_type,
+    item_type: 'service',
     active: filters.active,
   })
 }
@@ -19,13 +21,11 @@ export type CatalogItemPayload = {
   name: string
   description?: string
   price_from: number
-  item_type?: CatalogItemType
   icon?: string
   color?: string
   category?: string
   active?: boolean
   sort_order?: number
-  quantity?: number
   daily_capacity?: number
 }
 

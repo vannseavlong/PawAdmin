@@ -23,17 +23,17 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { type CatalogItem } from '../data/schema'
-import { updateCatalogItem } from '../data/catalog-items-api'
-import { createCatalogItemsColumns } from './catalog-items-columns'
+import { type Product } from '../data/schema'
+import { updateProduct } from '../data/products-api'
+import { createProductsColumns } from './products-columns'
 
 type DataTableProps = {
-  data: CatalogItem[]
+  data: Product[]
   search: Record<string, unknown>
   navigate: NavigateFn
 }
 
-export function CatalogItemsTable({ data, search, navigate }: DataTableProps) {
+export function ProductsTable({ data, search, navigate }: DataTableProps) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const queryClient = useQueryClient()
 
@@ -56,18 +56,18 @@ export function CatalogItemsTable({ data, search, navigate }: DataTableProps) {
   })
 
   const toggleActiveMutation = useMutation({
-    mutationFn: (item: CatalogItem) =>
-      updateCatalogItem(item.item_id, { active: !item.active }),
+    mutationFn: (item: Product) =>
+      updateProduct(item.item_id, { active: !item.active }),
     onSuccess: (_, item) => {
       toast.success(
         `"${item.name}" is now ${item.active ? 'inactive' : 'active'}.`
       )
-      queryClient.invalidateQueries({ queryKey: ['my-catalog-items'] })
+      queryClient.invalidateQueries({ queryKey: ['my-products'] })
     },
     onError: (error) => handleServerError(error),
   })
 
-  const columns = createCatalogItemsColumns({
+  const columns = createProductsColumns({
     onToggleActive: (item) => toggleActiveMutation.mutate(item),
     isToggling: toggleActiveMutation.isPending,
   })
@@ -85,7 +85,7 @@ export function CatalogItemsTable({ data, search, navigate }: DataTableProps) {
     globalFilterFn: (row, _columnId, filterValue: string) => {
       const term = filterValue.trim().toLowerCase()
       if (!term) return true
-      const item = row.original as CatalogItem
+      const item = row.original as Product
       return (
         item.name.toLowerCase().includes(term) ||
         (item.category ?? '').toLowerCase().includes(term)

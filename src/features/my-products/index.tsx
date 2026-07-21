@@ -6,25 +6,25 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { CatalogItemsDialogs } from './components/catalog-items-dialogs'
-import { CatalogItemsPrimaryButtons } from './components/catalog-items-primary-buttons'
-import { CatalogItemsProvider } from './components/catalog-items-provider'
-import { CatalogItemsTable } from './components/catalog-items-table'
-import { fetchCatalogItems } from './data/catalog-items-api'
+import { ProductsDialogs } from './components/products-dialogs'
+import { ProductsPrimaryButtons } from './components/products-primary-buttons'
+import { ProductsProvider } from './components/products-provider'
+import { ProductsTable } from './components/products-table'
+import { fetchProducts } from './data/products-api'
 
-const route = getRouteApi('/_authenticated/my-catalog/')
+const route = getRouteApi('/_authenticated/my-products/')
 
-export function MyCatalog() {
+export function MyProducts() {
   const search = route.useSearch()
   const navigate = route.useNavigate()
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['my-catalog-items'],
-    queryFn: () => fetchCatalogItems(),
+    queryKey: ['my-products'],
+    queryFn: () => fetchProducts(),
   })
 
   return (
-    <CatalogItemsProvider>
+    <ProductsProvider>
       <Header fixed>
         <Search className='me-auto' />
         <ThemeSwitch />
@@ -35,19 +35,20 @@ export function MyCatalog() {
       <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
         <div className='flex flex-wrap items-end justify-between gap-2'>
           <div>
-            <h2 className='text-2xl font-bold tracking-tight'>My Catalog</h2>
+            <h2 className='text-2xl font-bold tracking-tight'>My Products</h2>
             <p className='text-muted-foreground'>
-              Manage the services your shop offers.
+              Manage the pets, accessories, and other physical items your shop
+              sells.
             </p>
           </div>
-          <CatalogItemsPrimaryButtons />
+          <ProductsPrimaryButtons />
         </div>
         {isError ? (
           <p className='text-destructive'>
-            Failed to load your catalog. Please try again.
+            Failed to load your products. Please try again.
           </p>
         ) : (
-          <CatalogItemsTable
+          <ProductsTable
             data={isLoading ? [] : (data?.items ?? [])}
             search={search}
             navigate={navigate}
@@ -55,7 +56,7 @@ export function MyCatalog() {
         )}
       </Main>
 
-      <CatalogItemsDialogs />
-    </CatalogItemsProvider>
+      <ProductsDialogs />
+    </ProductsProvider>
   )
 }

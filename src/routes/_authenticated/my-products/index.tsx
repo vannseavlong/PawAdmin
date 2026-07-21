@@ -1,9 +1,9 @@
 import z from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
 import { requireMerchantRole } from '@/lib/route-guards'
-import { MyCatalog } from '@/features/my-catalog'
+import { MyProducts } from '@/features/my-products'
 
-const myCatalogSearchSchema = z.object({
+const myProductsSearchSchema = z.object({
   page: z.number().optional().catch(1),
   pageSize: z.number().optional().catch(10),
   active: z
@@ -13,8 +13,8 @@ const myCatalogSearchSchema = z.object({
   search: z.string().optional().catch(''),
 })
 
-export const Route = createFileRoute('/_authenticated/my-catalog/')({
-  validateSearch: myCatalogSearchSchema,
+export const Route = createFileRoute('/_authenticated/my-products/')({
+  validateSearch: myProductsSearchSchema,
   beforeLoad: requireMerchantRole,
-  component: MyCatalog,
+  component: MyProducts,
 })

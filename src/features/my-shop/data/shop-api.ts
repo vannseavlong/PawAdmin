@@ -10,12 +10,22 @@ export function fetchMyShop() {
 export type ShopUpdatePayload = Partial<{
   name: string
   description: string
-  logo: string
   contact_email: string
   contact_phone: string
   hours: string
+  // string ('' clears it, unchanged if omitted) or a new file to upload
+  logo: string | File
+  banner: string | File
 }>
 
+// Always sent as multipart/form-data — logo/banner may be a File (upload), an
+// empty string (clear), or omitted (leave unchanged); see ADMIN_API.md's
+// "Merchant shop profile" section for the server-side contract.
 export function updateMyShop(payload: ShopUpdatePayload) {
-  return apiClient.patch<{ shop: Shop }>('/merchant/shop', payload)
+  const formData = new FormData()
+  for (const [key, value] of Object.entries(payload)) {
+    if (value === undefined) continue
+    formData.append(key, value)
+  }
+  return apiClient.patchForm<{ shop: Shop }>('/merchant/shop', formData)
 }

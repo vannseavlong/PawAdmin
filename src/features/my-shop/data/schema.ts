@@ -19,6 +19,7 @@ const _shopSchema = z.object({
   name: z.string(),
   description: z.string().optional().default(''),
   logo: z.string().optional().default(''),
+  banner: z.string().optional().default(''),
   contact_email: z.string().optional().default(''),
   contact_phone: z.string().optional().default(''),
   hours: z.string().optional().default(''),

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
@@ -5,10 +6,15 @@ import { Main } from '@/components/layout/main'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { MyShopForm } from './components/my-shop-form'
+import { ShopEditDialog } from './components/shop-edit-dialog'
+import { ShopProfilePreview } from './components/shop-profile-preview'
 import { fetchMyShop } from './data/shop-api'
 
 export function MyShop() {
+  const [editOpen, setEditOpen] = useState(false)
+  // Bumped on every Edit click to force a fresh `ShopEditDialog` mount (fresh
+  // form/image state from the current `shop`, no stale edits from last time).
+  const [editKey, setEditKey] = useState(0)
   const { data, isLoading, isError } = useQuery({
     queryKey: ['my-shop'],
     queryFn: () => fetchMyShop(),
@@ -27,7 +33,7 @@ export function MyShop() {
         <div>
           <h2 className='text-2xl font-bold tracking-tight'>My Shop</h2>
           <p className='text-muted-foreground'>
-            Manage the storefront details customers see in the mobile app.
+            Preview of the storefront details customers see in the mobile app.
           </p>
         </div>
 
@@ -39,7 +45,23 @@ export function MyShop() {
         {isLoading && (
           <p className='text-muted-foreground'>Loading your shop…</p>
         )}
-        {data?.shop && <MyShopForm shop={data.shop} />}
+        {data?.shop && (
+          <>
+            <ShopProfilePreview
+              shop={data.shop}
+              onEdit={() => {
+                setEditKey((k) => k + 1)
+                setEditOpen(true)
+              }}
+            />
+            <ShopEditDialog
+              key={editKey}
+              shop={data.shop}
+              open={editOpen}
+              onOpenChange={setEditOpen}
+            />
+          </>
+        )}
       </Main>
     </>
   )

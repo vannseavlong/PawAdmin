@@ -2,6 +2,7 @@ import {
   LayoutDashboard,
   ClipboardList,
   ClipboardCheck,
+  Package,
   PawPrint,
   Store,
   Users,
@@ -116,9 +117,10 @@ const adminSidebarData: SidebarData = {
   ],
 }
 
-// Merchant nav — scoped to the two merchant-facing pages
-// (`/merchant/shop` → My Shop, `/merchant/catalog-items` → My Catalog) plus
-// the generic Settings group. No Dashboard: the existing Dashboard page is
+// Merchant nav — scoped to the merchant-facing pages (`/merchant/shop` → My
+// Shop, `/merchant/catalog-items` filtered to services → My Catalog and to
+// products → My Products, `/merchant/orders` → My Orders) plus the generic
+// Settings group. No Dashboard: the existing Dashboard page is
 // built entirely from admin-only stats (`/admin/bookings`, `/admin/services`,
 // `/admin/users`), so there's nothing on it a merchant account could load —
 // dropped rather than shown empty/erroring.
@@ -137,6 +139,11 @@ const merchantSidebarData: SidebarData = {
           title: 'My Catalog',
           url: '/my-catalog',
           icon: PawPrint,
+        },
+        {
+          title: 'My Products',
+          url: '/my-products',
+          icon: Package,
         },
         {
           title: 'My Orders',

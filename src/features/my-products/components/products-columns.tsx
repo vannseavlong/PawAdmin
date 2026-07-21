@@ -1,27 +1,51 @@
 import { type ColumnDef } from '@tanstack/react-table'
+import { PawPrint } from 'lucide-react'
+import { toDisplayImageUrl } from '@/lib/drive-image'
 import { Switch } from '@/components/ui/switch'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
-import { type CatalogItem } from '../data/schema'
+import { type Product } from '../data/schema'
 import { DataTableRowActions } from './data-table-row-actions'
 
-type CatalogItemsColumnActions = {
-  onToggleActive: (item: CatalogItem) => void
+type ProductsColumnActions = {
+  onToggleActive: (item: Product) => void
   isToggling: boolean
 }
 
-export function createCatalogItemsColumns({
+export function createProductsColumns({
   onToggleActive,
   isToggling,
-}: CatalogItemsColumnActions): ColumnDef<CatalogItem>[] {
+}: ProductsColumnActions): ColumnDef<Product>[] {
   return [
+    {
+      id: 'image',
+      header: 'Image',
+      cell: ({ row }) => {
+        const image = toDisplayImageUrl(row.original.image)
+        return (
+          <div className='flex size-10 items-center justify-center overflow-hidden rounded-md border bg-muted'>
+            {image ? (
+              <img
+                src={image}
+                alt=''
+                className='h-full w-full object-cover'
+              />
+            ) : (
+              <PawPrint className='size-4 text-muted-foreground' />
+            )}
+          </div>
+        )
+      },
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: 'name',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title='Name' />
       ),
       cell: ({ row }) => (
-        <LongText className='max-w-48 ps-3'>{row.getValue('name')}</LongText>
+        <LongText className='max-w-48'>{row.getValue('name')}</LongText>
       ),
       enableHiding: false,
     },
@@ -39,7 +63,7 @@ export function createCatalogItemsColumns({
     {
       accessorKey: 'price_from',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Price from' />
+        <DataTableColumnHeader column={column} title='Price' />
       ),
       cell: ({ row }) => {
         const price = row.getValue<number>('price_from')
@@ -47,15 +71,23 @@ export function createCatalogItemsColumns({
       },
     },
     {
-      id: 'daily_capacity',
+      accessorKey: 'quantity',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title='Daily Capacity' />
+        <DataTableColumnHeader column={column} title='Stock' />
       ),
-      cell: ({ row }) => (
-        <span className='text-muted-foreground'>
-          {row.original.daily_capacity ?? 'Unlimited'}
-        </span>
-      ),
+      cell: ({ row }) => {
+        const quantity = row.original.quantity
+        if (quantity === undefined) {
+          return <span className='text-muted-foreground'>Unlimited</span>
+        }
+        return (
+          <span
+            className={quantity === 0 ? 'font-medium text-destructive' : ''}
+          >
+            {quantity}
+          </span>
+        )
+      },
       enableSorting: false,
     },
     {
