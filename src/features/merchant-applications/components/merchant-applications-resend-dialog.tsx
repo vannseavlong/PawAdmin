@@ -19,7 +19,8 @@ export function MerchantApplicationsResendDialog({
   const queryClient = useQueryClient()
 
   const { mutate, isPending } = useMutation({
-    mutationFn: () => resendMerchantApplicationInvite(currentRow.application_id),
+    mutationFn: () =>
+      resendMerchantApplicationInvite(currentRow.application_id),
     onSuccess: () => {
       toast.success(`Invite resent to ${currentRow.contact_email}.`)
       queryClient.invalidateQueries({ queryKey: ['merchant-applications'] })

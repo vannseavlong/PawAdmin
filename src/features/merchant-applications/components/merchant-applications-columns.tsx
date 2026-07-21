@@ -14,9 +14,7 @@ export const merchantApplicationsColumns: ColumnDef<MerchantApplication>[] = [
       <DataTableColumnHeader column={column} title='Shop' />
     ),
     cell: ({ row }) => (
-      <LongText className='max-w-48 ps-3'>
-        {row.getValue('shop_name')}
-      </LongText>
+      <LongText className='max-w-48 ps-3'>{row.getValue('shop_name')}</LongText>
     ),
     enableHiding: false,
   },
@@ -42,9 +40,7 @@ export const merchantApplicationsColumns: ColumnDef<MerchantApplication>[] = [
       <DataTableColumnHeader column={column} title='Submitted' />
     ),
     cell: ({ row }) => (
-      <div className='text-nowrap'>
-        {formatDate(row.original._created_at)}
-      </div>
+      <div className='text-nowrap'>{formatDate(row.original._created_at)}</div>
     ),
   },
   {

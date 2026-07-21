@@ -1,4 +1,12 @@
-import { Clock, Mail, MoreVertical, Phone, SquarePen, Store } from 'lucide-react'
+import {
+  Clock,
+  Mail,
+  MoreVertical,
+  Phone,
+  SquarePen,
+  Store,
+} from 'lucide-react'
+import { toDisplayImageUrl } from '@/lib/drive-image'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -9,11 +17,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { toDisplayImageUrl } from '@/lib/drive-image'
 import { type Shop } from '../data/schema'
 
 const statusStyles: Record<Shop['status'], string> = {
-  pending: 'bg-amber-100/40 text-amber-900 dark:text-amber-200 border-amber-300',
+  pending:
+    'bg-amber-100/40 text-amber-900 dark:text-amber-200 border-amber-300',
   active: 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200',
   suspended: 'bg-neutral-300/40 border-neutral-300',
 }

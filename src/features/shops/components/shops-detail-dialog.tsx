@@ -51,8 +51,14 @@ export function ShopsDetailDialog({
             value={currentRow.owner_user_id || 'Invite not yet redeemed'}
           />
           <Field label='Description' value={currentRow.description || '—'} />
-          <Field label='Contact email' value={currentRow.contact_email || '—'} />
-          <Field label='Contact phone' value={currentRow.contact_phone || '—'} />
+          <Field
+            label='Contact email'
+            value={currentRow.contact_email || '—'}
+          />
+          <Field
+            label='Contact phone'
+            value={currentRow.contact_phone || '—'}
+          />
           <Field label='Hours' value={currentRow.hours || '—'} />
         </dl>
       </DialogContent>

@@ -1,9 +1,5 @@
 import { apiClient } from '@/lib/api-client'
-import {
-  type Shop,
-  type ShopStatus,
-  type ShopsListResponse,
-} from './schema'
+import { type Shop, type ShopStatus, type ShopsListResponse } from './schema'
 
 export type ShopFilters = {
   status?: ShopStatus

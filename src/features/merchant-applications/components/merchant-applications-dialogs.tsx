@@ -5,8 +5,7 @@ import { MerchantApplicationsRejectDialog } from './merchant-applications-reject
 import { MerchantApplicationsResendDialog } from './merchant-applications-resend-dialog'
 
 export function MerchantApplicationsDialogs() {
-  const { open, setOpen, currentRow, setCurrentRow } =
-    useMerchantApplications()
+  const { open, setOpen, currentRow, setCurrentRow } = useMerchantApplications()
 
   if (!currentRow) return null
 

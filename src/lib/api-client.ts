@@ -60,7 +60,11 @@ async function request<T>(
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...headers,
     },
-    body: formData ? body : body !== undefined ? JSON.stringify(body) : undefined,
+    body: formData
+      ? body
+      : body !== undefined
+        ? JSON.stringify(body)
+        : undefined,
   })
 
   if (response.status === 401 || response.status === 403) {

@@ -20,7 +20,8 @@ export const shopsColumns: ColumnDef<Shop>[] = [
   },
   {
     id: 'contact',
-    accessorFn: (row) => `${row.contact_email ?? ''} ${row.contact_phone ?? ''}`,
+    accessorFn: (row) =>
+      `${row.contact_email ?? ''} ${row.contact_phone ?? ''}`,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Contact' />
     ),

@@ -3,8 +3,7 @@ import { useShops } from './shops-provider'
 import { ShopsStatusDialog } from './shops-status-dialog'
 
 export function ShopsDialogs() {
-  const { open, setOpen, currentRow, setCurrentRow, targetStatus } =
-    useShops()
+  const { open, setOpen, currentRow, setCurrentRow, targetStatus } = useShops()
 
   if (!currentRow) return null
 

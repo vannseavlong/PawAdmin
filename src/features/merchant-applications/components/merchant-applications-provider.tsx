@@ -2,11 +2,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type MerchantApplication } from '../data/schema'
 
-type MerchantApplicationsDialogType =
-  | 'detail'
-  | 'approve'
-  | 'reject'
-  | 'resend'
+type MerchantApplicationsDialogType = 'detail' | 'approve' | 'reject' | 'resend'
 
 type MerchantApplicationsContextType = {
   open: MerchantApplicationsDialogType | null
@@ -26,12 +22,12 @@ export function MerchantApplicationsProvider({
   children: React.ReactNode
 }) {
   const [open, setOpen] = useDialogState<MerchantApplicationsDialogType>(null)
-  const [currentRow, setCurrentRow] = useState<MerchantApplication | null>(
-    null
-  )
+  const [currentRow, setCurrentRow] = useState<MerchantApplication | null>(null)
 
   return (
-    <MerchantApplicationsContext value={{ open, setOpen, currentRow, setCurrentRow }}>
+    <MerchantApplicationsContext
+      value={{ open, setOpen, currentRow, setCurrentRow }}
+    >
       {children}
     </MerchantApplicationsContext>
   )

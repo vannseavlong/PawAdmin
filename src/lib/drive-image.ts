@@ -19,7 +19,9 @@ export function toDisplayImageUrl(url?: string | null): string | undefined {
   try {
     const parsed = new URL(url)
     if (!DRIVE_HOSTS.has(parsed.hostname)) return url
-    fileId = parsed.searchParams.get('id') ?? parsed.pathname.match(/\/d\/([-\w]+)/)?.[1]
+    fileId =
+      parsed.searchParams.get('id') ??
+      parsed.pathname.match(/\/d\/([-\w]+)/)?.[1]
   } catch {
     return url
   }

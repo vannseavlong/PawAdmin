@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { handleServerError } from '@/lib/handle-server-error'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { updateOrderStatus } from '../data/orders-api'
 import { statusLabels } from '../data/data'
+import { updateOrderStatus } from '../data/orders-api'
 import { type Order, type OrderStatus } from '../data/schema'
 
 type MyOrdersStatusDialogProps = {

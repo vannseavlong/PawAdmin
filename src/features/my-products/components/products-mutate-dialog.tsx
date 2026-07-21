@@ -5,8 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ImagePlus, PawPrint, X } from 'lucide-react'
 import { toast } from 'sonner'
-import { handleServerError } from '@/lib/handle-server-error'
 import { toDisplayImageUrl } from '@/lib/drive-image'
+import { handleServerError } from '@/lib/handle-server-error'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -27,8 +27,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
-import { type Product } from '../data/schema'
 import { createProduct, updateProduct } from '../data/products-api'
+import { type Product } from '../data/schema'
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required.'),
@@ -233,9 +233,7 @@ export function ProductsMutateDialog({
                 name='price_from'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>
-                      Price
-                    </FormLabel>
+                    <FormLabel className='col-span-2 text-end'>Price</FormLabel>
                     <FormControl>
                       <Input
                         type='number'

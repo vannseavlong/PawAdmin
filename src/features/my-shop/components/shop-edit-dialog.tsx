@@ -5,9 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ImagePlus, Store, X } from 'lucide-react'
 import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
 import { toDisplayImageUrl } from '@/lib/drive-image'
 import { handleServerError } from '@/lib/handle-server-error'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -74,11 +74,7 @@ function ImagePicker({ label, shape, currentUrl, onChange }: ImagePickerProps) {
         )}
       >
         {previewUrl ? (
-          <img
-            src={previewUrl}
-            alt=''
-            className='h-full w-full object-cover'
-          />
+          <img src={previewUrl} alt='' className='h-full w-full object-cover' />
         ) : (
           <Store className='size-6 text-muted-foreground' />
         )}
@@ -132,7 +128,11 @@ type ShopEditDialogProps = {
   onOpenChange: (open: boolean) => void
 }
 
-export function ShopEditDialog({ shop, open, onOpenChange }: ShopEditDialogProps) {
+export function ShopEditDialog({
+  shop,
+  open,
+  onOpenChange,
+}: ShopEditDialogProps) {
   const queryClient = useQueryClient()
   const [logoEdit, setLogoEdit] = useState<ImageEdit>(undefined)
   const [bannerEdit, setBannerEdit] = useState<ImageEdit>(undefined)
@@ -165,8 +165,8 @@ export function ShopEditDialog({ shop, open, onOpenChange }: ShopEditDialogProps
         <DialogHeader className='text-start'>
           <DialogTitle>Edit Shop Profile</DialogTitle>
           <DialogDescription>
-            Update the storefront details customers see in the mobile app.
-            Click save when you&apos;re done.
+            Update the storefront details customers see in the mobile app. Click
+            save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <div className='h-105 w-[calc(100%+0.75rem)] overflow-y-auto py-1 pe-3'>
@@ -203,7 +203,10 @@ export function ShopEditDialog({ shop, open, onOpenChange }: ShopEditDialogProps
                   <FormItem>
                     <FormLabel>Shop name</FormLabel>
                     <FormControl>
-                      <Input placeholder='Whiskers & Wags Grooming' {...field} />
+                      <Input
+                        placeholder='Whiskers & Wags Grooming'
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

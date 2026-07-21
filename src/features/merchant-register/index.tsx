@@ -17,8 +17,8 @@ export function MerchantRegister() {
               Application submitted
             </h1>
             <p className='text-sm text-muted-foreground'>
-              Thanks for applying! We&apos;ll review your application and
-              email you once it&apos;s approved.
+              Thanks for applying! We&apos;ll review your application and email
+              you once it&apos;s approved.
             </p>
           </div>
           <Link

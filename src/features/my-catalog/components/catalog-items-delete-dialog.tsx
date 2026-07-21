@@ -7,8 +7,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { type CatalogItem } from '../data/schema'
 import { deleteCatalogItem } from '../data/catalog-items-api'
+import { type CatalogItem } from '../data/schema'
 
 type CatalogItemsDeleteDialogProps = {
   open: boolean
@@ -63,10 +63,9 @@ export function CatalogItemsDeleteDialog({
           <p className='mb-2'>
             Are you sure you want to delete{' '}
             <span className='font-bold'>{currentRow.name}</span>? This is a{' '}
-            <span className='font-bold'>hard delete</span> — the catalogue
-            entry is removed for good, with no undo. Existing bookings that
-            reference this item keep their own copy of the name, so they are
-            unaffected.
+            <span className='font-bold'>hard delete</span> — the catalogue entry
+            is removed for good, with no undo. Existing bookings that reference
+            this item keep their own copy of the name, so they are unaffected.
           </p>
 
           <Label className='my-2'>

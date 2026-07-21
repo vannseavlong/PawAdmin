@@ -23,8 +23,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { type Product } from '../data/schema'
 import { updateProduct } from '../data/products-api'
+import { type Product } from '../data/schema'
 import { createProductsColumns } from './products-columns'
 
 type DataTableProps = {
@@ -50,9 +50,7 @@ export function ProductsTable({ data, search, navigate }: DataTableProps) {
     navigate,
     pagination: { defaultPage: 1, defaultPageSize: 10 },
     globalFilter: { enabled: true, key: 'search' },
-    columnFilters: [
-      { columnId: 'active', searchKey: 'active', type: 'array' },
-    ],
+    columnFilters: [{ columnId: 'active', searchKey: 'active', type: 'array' }],
   })
 
   const toggleActiveMutation = useMutation({

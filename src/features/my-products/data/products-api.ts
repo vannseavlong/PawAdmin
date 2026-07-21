@@ -41,7 +41,10 @@ export function createProduct(payload: ProductPayload) {
   )
 }
 
-export function updateProduct(itemId: string, payload: Partial<ProductPayload>) {
+export function updateProduct(
+  itemId: string,
+  payload: Partial<ProductPayload>
+) {
   const formData = toFormData(payload)
   return apiClient.patchForm<{ item: Product }>(
     `/merchant/catalog-items/${itemId}`,

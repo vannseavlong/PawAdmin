@@ -38,8 +38,8 @@ export function Shops() {
           <div>
             <h2 className='text-2xl font-bold tracking-tight'>Shops</h2>
             <p className='text-muted-foreground'>
-              Every shop on the marketplace. Suspend or reactivate a
-              shop&apos;s storefront here.
+              Every shop on the marketplace. Suspend or reactivate a shop&apos;s
+              storefront here.
             </p>
           </div>
         </div>

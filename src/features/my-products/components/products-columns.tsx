@@ -25,11 +25,7 @@ export function createProductsColumns({
         return (
           <div className='flex size-10 items-center justify-center overflow-hidden rounded-md border bg-muted'>
             {image ? (
-              <img
-                src={image}
-                alt=''
-                className='h-full w-full object-cover'
-              />
+              <img src={image} alt='' className='h-full w-full object-cover' />
             ) : (
               <PawPrint className='size-4 text-muted-foreground' />
             )}
