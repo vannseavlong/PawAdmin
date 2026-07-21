@@ -24,6 +24,7 @@ import { Route as AuthenticatedShopsIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedOrdersIndexRouteImport } from './routes/_authenticated/orders/index'
 import { Route as AuthenticatedMyShopIndexRouteImport } from './routes/_authenticated/my-shop/index'
+import { Route as AuthenticatedMyOrdersIndexRouteImport } from './routes/_authenticated/my-orders/index'
 import { Route as AuthenticatedMyCatalogIndexRouteImport } from './routes/_authenticated/my-catalog/index'
 import { Route as AuthenticatedMerchantApplicationsIndexRouteImport } from './routes/_authenticated/merchant-applications/index'
 import { Route as AuthenticatedContentIndexRouteImport } from './routes/_authenticated/content/index'
@@ -112,6 +113,12 @@ const AuthenticatedMyShopIndexRoute =
     path: '/my-shop/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedMyOrdersIndexRoute =
+  AuthenticatedMyOrdersIndexRouteImport.update({
+    id: '/my-orders/',
+    path: '/my-orders/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedMyCatalogIndexRoute =
   AuthenticatedMyCatalogIndexRouteImport.update({
     id: '/my-catalog/',
@@ -185,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/content/': typeof AuthenticatedContentIndexRoute
   '/merchant-applications/': typeof AuthenticatedMerchantApplicationsIndexRoute
   '/my-catalog/': typeof AuthenticatedMyCatalogIndexRoute
+  '/my-orders/': typeof AuthenticatedMyOrdersIndexRoute
   '/my-shop/': typeof AuthenticatedMyShopIndexRoute
   '/orders/': typeof AuthenticatedOrdersIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
@@ -209,6 +217,7 @@ export interface FileRoutesByTo {
   '/content': typeof AuthenticatedContentIndexRoute
   '/merchant-applications': typeof AuthenticatedMerchantApplicationsIndexRoute
   '/my-catalog': typeof AuthenticatedMyCatalogIndexRoute
+  '/my-orders': typeof AuthenticatedMyOrdersIndexRoute
   '/my-shop': typeof AuthenticatedMyShopIndexRoute
   '/orders': typeof AuthenticatedOrdersIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
@@ -236,6 +245,7 @@ export interface FileRoutesById {
   '/_authenticated/content/': typeof AuthenticatedContentIndexRoute
   '/_authenticated/merchant-applications/': typeof AuthenticatedMerchantApplicationsIndexRoute
   '/_authenticated/my-catalog/': typeof AuthenticatedMyCatalogIndexRoute
+  '/_authenticated/my-orders/': typeof AuthenticatedMyOrdersIndexRoute
   '/_authenticated/my-shop/': typeof AuthenticatedMyShopIndexRoute
   '/_authenticated/orders/': typeof AuthenticatedOrdersIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/content/'
     | '/merchant-applications/'
     | '/my-catalog/'
+    | '/my-orders/'
     | '/my-shop/'
     | '/orders/'
     | '/settings/'
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/content'
     | '/merchant-applications'
     | '/my-catalog'
+    | '/my-orders'
     | '/my-shop'
     | '/orders'
     | '/settings'
@@ -313,6 +325,7 @@ export interface FileRouteTypes {
     | '/_authenticated/content/'
     | '/_authenticated/merchant-applications/'
     | '/_authenticated/my-catalog/'
+    | '/_authenticated/my-orders/'
     | '/_authenticated/my-shop/'
     | '/_authenticated/orders/'
     | '/_authenticated/settings/'
@@ -439,6 +452,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMyShopIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/my-orders/': {
+      id: '/_authenticated/my-orders/'
+      path: '/my-orders'
+      fullPath: '/my-orders/'
+      preLoaderRoute: typeof AuthenticatedMyOrdersIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/my-catalog/': {
       id: '/_authenticated/my-catalog/'
       path: '/my-catalog'
@@ -535,6 +555,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedContentIndexRoute: typeof AuthenticatedContentIndexRoute
   AuthenticatedMerchantApplicationsIndexRoute: typeof AuthenticatedMerchantApplicationsIndexRoute
   AuthenticatedMyCatalogIndexRoute: typeof AuthenticatedMyCatalogIndexRoute
+  AuthenticatedMyOrdersIndexRoute: typeof AuthenticatedMyOrdersIndexRoute
   AuthenticatedMyShopIndexRoute: typeof AuthenticatedMyShopIndexRoute
   AuthenticatedOrdersIndexRoute: typeof AuthenticatedOrdersIndexRoute
   AuthenticatedShopsIndexRoute: typeof AuthenticatedShopsIndexRoute
@@ -549,6 +570,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMerchantApplicationsIndexRoute:
     AuthenticatedMerchantApplicationsIndexRoute,
   AuthenticatedMyCatalogIndexRoute: AuthenticatedMyCatalogIndexRoute,
+  AuthenticatedMyOrdersIndexRoute: AuthenticatedMyOrdersIndexRoute,
   AuthenticatedMyShopIndexRoute: AuthenticatedMyShopIndexRoute,
   AuthenticatedOrdersIndexRoute: AuthenticatedOrdersIndexRoute,
   AuthenticatedShopsIndexRoute: AuthenticatedShopsIndexRoute,

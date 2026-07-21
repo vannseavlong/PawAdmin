@@ -19,6 +19,11 @@ const _catalogItemSchema = z.object({
   category: z.string().optional().default(''),
   active: z.boolean(),
   sort_order: z.number(),
+  // Optional — absent/undefined means "unlimited". quantity applies to
+  // item_type: 'product' (decremented per order, blocks at 0); daily_capacity
+  // applies to item_type: 'service' (caps concurrent overlapping bookings).
+  quantity: z.number().optional(),
+  daily_capacity: z.number().optional(),
 })
 export type CatalogItem = z.infer<typeof _catalogItemSchema>
 

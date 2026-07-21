@@ -2,9 +2,71 @@
 
 Tracks status across all three repos in `/Users/suntel/personal/paw`:
 `paw_sheetDB` (backend), `admin_portal` (this repo), `pet_carrying_app` (mobile).
-Last updated 2026-07-15.
+Last updated 2026-07-21.
 
 ## Done
+
+### `paw_sheetDB` (backend) — Merchant Operations (2026-07-21)
+- **Merchant order management**: new `GET/GET :id/PATCH :id /merchant/orders`
+  (`src/services/merchant/orders.service.ts` + controller + routes), mirroring
+  `/admin/bookings`'s fan-out-over-every-user-sheet pattern but forced to the
+  caller's own `shop_id` (from the JWT, never client-supplied) — same
+  status machine (`pending→confirmed→active→completed`, `cancelled` from any
+  non-terminal state) admin already had, no new "exchange/return" status.
+  `usersWithSheets()`/`findUser()` extracted out of `admin/bookings.service.ts`
+  into shared `src/services/shared/bookingLookup.ts` so both services fan out
+  the same way instead of duplicating it.
+- **Stock (products) + capacity (services)**: two new optional columns on
+  `catalog_items` — `quantity` (product stock, decremented per booking, blocks
+  at 0) and `daily_capacity` (service booking cap per overlapping date range).
+  `src/utils/stockAdjustment.ts` (`decrementIfProduct`/`restockIfProduct`,
+  wrapped in the existing per-key `withLock` mutex, same single-process-only
+  tradeoff already accepted for invite redemption) wired into booking create
+  (blocks out-of-stock creates) and every cancel path (customer self-cancel,
+  admin, and the new merchant orders endpoint) for restock. Capacity check in
+  `bookings.service.ts` (`checkServiceCapacity`) is explicitly a **soft,
+  best-effort** check — no shared bookings table exists, so it fans out over
+  every user-with-a-sheet on each booking attempt; has a race window and isn't
+  multi-instance-safe, same tradeoff class as the existing mutex.
+- 15 new vitest cases (`test/merchant/orders.test.ts`, additions to
+  `test/bookings.test.ts`) covering shop-scoping/404s, status transitions,
+  stock block/restock, and capacity rejection. `pnpm build` and `pnpm test`
+  both pass clean (101/101).
+- **Not yet done**: `pnpm db:sync` has **not** been run — the new `quantity`/
+  `daily_capacity` columns exist only in `schemas/admin/catalog_items.ts`
+  locally, not yet pushed to the live Google Sheet. Needs an explicit
+  go-ahead before running against production data.
+
+### `admin_portal` (this repo) — Merchant Operations (2026-07-21)
+- **"My Orders"** (`src/features/my-orders/`): near-verbatim clone of the
+  admin `orders` feature's provider/dialogs/status-dialog/detail-dialog/
+  columns/table pattern, repointed at `/merchant/orders` (no shop filter —
+  always the caller's own shop). New route `/my-orders`
+  (`requireMerchantRole`), added to the merchant sidebar nav group.
+- **My Catalog stock fields**: `quantity`/`daily_capacity` added to
+  `data/schema.ts`, `catalog-items-api.ts` payload types, and the
+  mutate-dialog form (`z.coerce.number().min(0).optional()`, conditionally
+  rendered — `quantity` only when `item_type === 'product'`,
+  `daily_capacity` only when `'service'`, via `form.watch('item_type')`).
+  New "Stock/Capacity" table column.
+- `pnpm build` (`tsc -b && vite build`) passes clean.
+- **Not yet done / not verified**:
+  - No live manual verification yet — haven't run the admin_portal dev server
+    against a running backend and clicked through My Orders / the new My
+    Catalog fields in a browser.
+  - No end-to-end backend verification either — haven't created a real
+    `item_id`-based booking via a seeded test user/shop and confirmed it
+    shows up correctly in `/merchant/orders` against live (non-test) data.
+  - No new automated tests added in this repo for My Orders / the My Catalog
+    stock fields (same pre-existing gap already noted below for
+    Orders/Content/Users).
+  - Nothing committed — all of the above is sitting in the working tree only
+    (`git status`: 6 modified + 2 new untracked feature/route directories).
+  - Real production bookings will mostly **not** appear in My Orders until
+    `pet_carrying_app` sends `item_id` on booking creation (still Phase 4
+    below, not done) — `booking.shop_id` stays blank on the legacy
+    `service_id` path, so this feature is correct but has near-empty data to
+    act on until that mobile-side work lands.
 
 ### `paw_sheetDB` (backend)
 - Upgraded `longcelot-sheet-db` 0.1.18 → 0.1.39; fixed the breaking `createUserSheet`
@@ -39,6 +101,30 @@ Last updated 2026-07-15.
 ## Remaining / known gaps
 
 ### `paw_sheetDB`
+- [x] **Merchant Operations (2026-07-21): ran `pnpm db:sync`** — the new
+      `quantity`/`daily_capacity` columns on `catalog_items` are now live on
+      the real Google Sheet (confirmed via `pnpm db:validate` and a live
+      round-trip write/read, see below).
+- [x] **Merchant Operations (2026-07-21): live end-to-end verification done.**
+      Seeded a scratch merchant/shop/catalog (one `product` with `quantity:2`,
+      one `service` with `daily_capacity:1`) directly into the live sheet,
+      created real `item_id`-based bookings as an existing test customer
+      (`jamie@test.local`) against the running `pnpm dev` server: confirmed
+      `shop_id` denormalized onto the booking, `GET /merchant/orders` returned
+      it correctly shop-scoped, stock decremented 2→1 on the product booking
+      and restocked to 2 on `PATCH /merchant/orders/:id {status:cancelled}`,
+      and a second overlapping booking against the `daily_capacity:1` service
+      correctly `409`'d ("fully booked"). All scratch data deleted after
+      (catalog items via `DELETE /merchant/catalog-items`, user/credentials/
+      shop/bookings via a one-off script against `adminContext()`/
+      `userContext()`, same pattern as `seeds/*.ts`). Committed in `6d7384f`.
+      **Note:** `GET /merchant/orders` against the 3 shared test fixture users
+      (`jamie`/`taylor`/`morgan`) returns each booking 3× (once per user
+      identity) — expected, not a bug: those 3 test accounts intentionally
+      share one physical dev sheet (`DEV_USER_SHEET_ID`, see
+      `seeds/test-users.ts`), so fanning out per-user re-reads the same
+      underlying rows. Won't happen for real users, who each get their own
+      sheet via `createUserSheet()`.
 - [x] **External, human-only step:** register `http://localhost:3000/admin/auth/callback`
       (and the production equivalent, when deployed) as an *additional* authorized
       redirect URI on the Google Cloud OAuth client — the admin Google sign-in button
@@ -114,6 +200,21 @@ Last updated 2026-07-15.
       Documented in `ADMIN_API.md`.
 
 ### `admin_portal`
+- [x] **Merchant Operations (2026-07-21): committed and live-verified.**
+      Logged in as the scratch merchant (Playwright against the running
+      `pnpm dev` server on :5173 + live backend on :3000): `/my-orders` renders
+      the seeded orders correctly (shop-scoped, no admin-only nav visible to
+      the merchant role); `/my-catalog`'s new "Stock/Capacity" column shows
+      the right value per item; the mutate dialog correctly switches between
+      "Stock quantity" (product) and "Daily capacity" (service) based on
+      `item_type`. Zero browser console errors throughout. Committed.
+- [x] **Correction found during this session's live verification:** the
+      "My Orders will look empty until `pet_carrying_app` sends `item_id`"
+      note below was stale — Phase 4 (mobile) already shipped and is
+      committed in that repo (`AddBookingScreen` sends `item_id`, confirmed
+      by reading `pet_booking_model.dart`/`add_booking_screen.dart`). Real
+      customer bookings **will** populate `shop_id` and show up in My Orders
+      already; nothing further blocks this.
 - [ ] No automated tests for the new Orders/Content/Users features (the existing test
       suite covers old template scaffolding, not this work).
 - [ ] No production deployment/hosting configured — dev-only right now

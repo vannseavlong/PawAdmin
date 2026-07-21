@@ -25,6 +25,8 @@ export type CatalogItemPayload = {
   category?: string
   active?: boolean
   sort_order?: number
+  quantity?: number
+  daily_capacity?: number
 }
 
 export function createCatalogItem(payload: CatalogItemPayload) {

@@ -60,6 +60,23 @@ export function createCatalogItemsColumns({
       },
     },
     {
+      id: 'stock',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title='Stock/Capacity' />
+      ),
+      cell: ({ row }) => {
+        const item = row.original
+        const value =
+          item.item_type === 'product' ? item.quantity : item.daily_capacity
+        return (
+          <span className='text-muted-foreground'>
+            {value ?? 'Unlimited'}
+          </span>
+        )
+      },
+      enableSorting: false,
+    },
+    {
       accessorKey: 'description',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title='Description' />

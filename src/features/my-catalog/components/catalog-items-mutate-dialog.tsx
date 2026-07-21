@@ -44,6 +44,10 @@ const formSchema = z.object({
   color: z.string().optional(),
   active: z.boolean(),
   sort_order: z.coerce.number().int().min(0).optional(),
+  // Left blank means "unlimited" — only meaningful for the matching item_type
+  // (quantity for 'product', daily_capacity for 'service'), see field rendering below.
+  quantity: z.coerce.number().min(0).optional(),
+  daily_capacity: z.coerce.number().min(0).optional(),
 })
 // `price_from`/`sort_order` are coerced from the raw string an <input> gives
 // us, so the form's field values (input) differ from the submitted payload
@@ -78,6 +82,8 @@ export function CatalogItemsMutateDialog({
           color: currentRow.color,
           active: currentRow.active,
           sort_order: currentRow.sort_order,
+          quantity: currentRow.quantity,
+          daily_capacity: currentRow.daily_capacity,
         }
       : {
           name: '',
@@ -91,6 +97,8 @@ export function CatalogItemsMutateDialog({
           sort_order: 0,
         },
   })
+
+  const itemType = form.watch('item_type')
 
   const { mutate, isPending } = useMutation({
     mutationFn: (values: CatalogItemForm) =>
@@ -305,6 +313,56 @@ export function CatalogItemsMutateDialog({
                   </FormItem>
                 )}
               />
+              {itemType === 'product' && (
+                <FormField
+                  control={form.control}
+                  name='quantity'
+                  render={({ field }) => (
+                    <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                      <FormLabel className='col-span-2 text-end'>
+                        Stock quantity
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type='number'
+                          min={0}
+                          step='1'
+                          placeholder='Leave blank for unlimited'
+                          className='col-span-4'
+                          {...field}
+                          value={field.value as string | number}
+                        />
+                      </FormControl>
+                      <FormMessage className='col-span-4 col-start-3' />
+                    </FormItem>
+                  )}
+                />
+              )}
+              {itemType === 'service' && (
+                <FormField
+                  control={form.control}
+                  name='daily_capacity'
+                  render={({ field }) => (
+                    <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
+                      <FormLabel className='col-span-2 text-end'>
+                        Daily capacity
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type='number'
+                          min={0}
+                          step='1'
+                          placeholder='Leave blank for unlimited'
+                          className='col-span-4'
+                          {...field}
+                          value={field.value as string | number}
+                        />
+                      </FormControl>
+                      <FormMessage className='col-span-4 col-start-3' />
+                    </FormItem>
+                  )}
+                />
+              )}
               <FormField
                 control={form.control}
                 name='active'

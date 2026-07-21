@@ -138,6 +138,11 @@ const merchantSidebarData: SidebarData = {
           url: '/my-catalog',
           icon: PawPrint,
         },
+        {
+          title: 'My Orders',
+          url: '/my-orders',
+          icon: ClipboardList,
+        },
       ],
     },
     settingsNavGroup,
