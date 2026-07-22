@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   type VisibilityState,
@@ -23,6 +23,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
+import { useCategories } from '@/hooks/use-categories'
 import { updateProduct } from '../data/products-api'
 import { type Product } from '../data/schema'
 import { createProductsColumns } from './products-columns'
@@ -36,6 +37,11 @@ type DataTableProps = {
 export function ProductsTable({ data, search, navigate }: DataTableProps) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const queryClient = useQueryClient()
+  const { categories } = useCategories()
+  const categoryNameById = useMemo(
+    () => new Map(categories.map((c) => [c.category_id, c])),
+    [categories]
+  )
 
   const {
     globalFilter,
@@ -68,6 +74,7 @@ export function ProductsTable({ data, search, navigate }: DataTableProps) {
   const columns = createProductsColumns({
     onToggleActive: (item) => toggleActiveMutation.mutate(item),
     isToggling: toggleActiveMutation.isPending,
+    categoryNameById,
   })
 
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -84,9 +91,10 @@ export function ProductsTable({ data, search, navigate }: DataTableProps) {
       const term = filterValue.trim().toLowerCase()
       if (!term) return true
       const item = row.original as Product
+      const categoryName = categoryNameById.get(item.category_id ?? '')?.name ?? ''
       return (
         item.name.toLowerCase().includes(term) ||
-        (item.category ?? '').toLowerCase().includes(term)
+        categoryName.toLowerCase().includes(term)
       )
     },
     onPaginationChange,

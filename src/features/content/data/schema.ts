@@ -9,7 +9,7 @@ const _serviceSchema = z.object({
   price_from: z.number(),
   icon: z.string(),
   color: z.string(),
-  category: z.string(),
+  category_id: z.string(),
   active: z.boolean(),
   sort_order: z.number(),
 })

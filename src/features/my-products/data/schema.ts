@@ -12,7 +12,7 @@ const _productSchema = z.object({
   description: z.string().optional().default(''),
   price_from: z.number(),
   image: z.string().optional().default(''),
-  category: z.string().optional().default(''),
+  category_id: z.string().optional().default(''),
   active: z.boolean(),
   sort_order: z.number(),
   // Optional — absent/undefined means "unlimited" stock.

@@ -14,7 +14,7 @@ export type ProductPayload = {
   name: string
   description?: string
   price_from: number
-  category?: string
+  category_id?: string
   active?: boolean
   quantity?: number
   // string ('' clears it, unchanged if omitted) or a new file to upload

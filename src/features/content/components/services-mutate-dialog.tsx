@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { handleServerError } from '@/lib/handle-server-error'
 import { Button } from '@/components/ui/button'
@@ -22,8 +22,16 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
+import { fetchCategories } from '@/features/categories/data/categories-api'
 import { type Service } from '../data/schema'
 import { createService, updateService } from '../data/services-api'
 
@@ -33,7 +41,7 @@ const formSchema = z.object({
   price_from: z.coerce.number().min(0, 'Price must be 0 or more.'),
   icon: z.string().min(1, 'Icon is required.'),
   color: z.string().min(1, 'Color is required.'),
-  category: z.string().min(1, 'Category is required.'),
+  category_id: z.string().min(1, 'Category is required.'),
   active: z.boolean(),
   sort_order: z.coerce.number().int().min(0).optional(),
 })
@@ -56,6 +64,11 @@ export function ServicesMutateDialog({
 }: ServicesMutateDialogProps) {
   const isEdit = !!currentRow
   const queryClient = useQueryClient()
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => fetchCategories(),
+  })
+  const categories = categoriesData?.categories ?? []
 
   const form = useForm<ServiceFormInput, unknown, ServiceForm>({
     resolver: zodResolver(formSchema),
@@ -66,7 +79,7 @@ export function ServicesMutateDialog({
           price_from: currentRow.price_from,
           icon: currentRow.icon,
           color: currentRow.color,
-          category: currentRow.category,
+          category_id: currentRow.category_id,
           active: currentRow.active,
           sort_order: currentRow.sort_order,
         }
@@ -76,7 +89,7 @@ export function ServicesMutateDialog({
           price_from: 0,
           icon: '',
           color: '#D6EAE4',
-          category: '',
+          category_id: '',
           active: true,
           sort_order: 0,
         },
@@ -186,19 +199,33 @@ export function ServicesMutateDialog({
               />
               <FormField
                 control={form.control}
-                name='category'
+                name='category_id'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
                     <FormLabel className='col-span-2 text-end'>
                       Category
                     </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='grooming'
-                        className='col-span-4'
-                        {...field}
-                      />
-                    </FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className='col-span-4'>
+                          <SelectValue placeholder='Select a category' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem
+                            key={category.category_id}
+                            value={category.category_id}
+                          >
+                            {category.icon ? `${category.icon} ` : ''}
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage className='col-span-4 col-start-3' />
                   </FormItem>
                 )}

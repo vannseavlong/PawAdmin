@@ -29,6 +29,7 @@ import { Route as AuthenticatedMyOrdersIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedMyCatalogIndexRouteImport } from './routes/_authenticated/my-catalog/index'
 import { Route as AuthenticatedMerchantApplicationsIndexRouteImport } from './routes/_authenticated/merchant-applications/index'
 import { Route as AuthenticatedContentIndexRouteImport } from './routes/_authenticated/content/index'
+import { Route as AuthenticatedCategoriesIndexRouteImport } from './routes/_authenticated/categories/index'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
 import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_authenticated/settings/display'
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
@@ -144,6 +145,12 @@ const AuthenticatedContentIndexRoute =
     path: '/content/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedCategoriesIndexRoute =
+  AuthenticatedCategoriesIndexRouteImport.update({
+    id: '/categories/',
+    path: '/categories/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsNotificationsRoute =
   AuthenticatedSettingsNotificationsRouteImport.update({
     id: '/notifications',
@@ -196,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/categories/': typeof AuthenticatedCategoriesIndexRoute
   '/content/': typeof AuthenticatedContentIndexRoute
   '/merchant-applications/': typeof AuthenticatedMerchantApplicationsIndexRoute
   '/my-catalog/': typeof AuthenticatedMyCatalogIndexRoute
@@ -222,6 +230,7 @@ export interface FileRoutesByTo {
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/categories': typeof AuthenticatedCategoriesIndexRoute
   '/content': typeof AuthenticatedContentIndexRoute
   '/merchant-applications': typeof AuthenticatedMerchantApplicationsIndexRoute
   '/my-catalog': typeof AuthenticatedMyCatalogIndexRoute
@@ -251,6 +260,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/_authenticated/categories/': typeof AuthenticatedCategoriesIndexRoute
   '/_authenticated/content/': typeof AuthenticatedContentIndexRoute
   '/_authenticated/merchant-applications/': typeof AuthenticatedMerchantApplicationsIndexRoute
   '/_authenticated/my-catalog/': typeof AuthenticatedMyCatalogIndexRoute
@@ -280,6 +290,7 @@ export interface FileRouteTypes {
     | '/settings/appearance'
     | '/settings/display'
     | '/settings/notifications'
+    | '/categories/'
     | '/content/'
     | '/merchant-applications/'
     | '/my-catalog/'
@@ -306,6 +317,7 @@ export interface FileRouteTypes {
     | '/settings/appearance'
     | '/settings/display'
     | '/settings/notifications'
+    | '/categories'
     | '/content'
     | '/merchant-applications'
     | '/my-catalog'
@@ -334,6 +346,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/appearance'
     | '/_authenticated/settings/display'
     | '/_authenticated/settings/notifications'
+    | '/_authenticated/categories/'
     | '/_authenticated/content/'
     | '/_authenticated/merchant-applications/'
     | '/_authenticated/my-catalog/'
@@ -500,6 +513,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedContentIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/categories/': {
+      id: '/_authenticated/categories/'
+      path: '/categories'
+      fullPath: '/categories/'
+      preLoaderRoute: typeof AuthenticatedCategoriesIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings/notifications': {
       id: '/_authenticated/settings/notifications'
       path: '/notifications'
@@ -572,6 +592,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
+  AuthenticatedCategoriesIndexRoute: typeof AuthenticatedCategoriesIndexRoute
   AuthenticatedContentIndexRoute: typeof AuthenticatedContentIndexRoute
   AuthenticatedMerchantApplicationsIndexRoute: typeof AuthenticatedMerchantApplicationsIndexRoute
   AuthenticatedMyCatalogIndexRoute: typeof AuthenticatedMyCatalogIndexRoute
@@ -587,6 +608,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
+  AuthenticatedCategoriesIndexRoute: AuthenticatedCategoriesIndexRoute,
   AuthenticatedContentIndexRoute: AuthenticatedContentIndexRoute,
   AuthenticatedMerchantApplicationsIndexRoute:
     AuthenticatedMerchantApplicationsIndexRoute,

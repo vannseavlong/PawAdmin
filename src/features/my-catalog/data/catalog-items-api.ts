@@ -23,7 +23,7 @@ export type CatalogItemPayload = {
   price_from: number
   icon?: string
   color?: string
-  category?: string
+  category_id?: string
   active?: boolean
   sort_order?: number
   daily_capacity?: number

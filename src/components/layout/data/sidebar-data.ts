@@ -5,6 +5,7 @@ import {
   Package,
   PawPrint,
   Store,
+  Tag,
   Users,
   Monitor,
   Bell,
@@ -90,6 +91,11 @@ const adminSidebarData: SidebarData = {
           title: 'Content',
           url: '/content',
           icon: PawPrint,
+        },
+        {
+          title: 'Categories',
+          url: '/categories',
+          icon: Tag,
         },
         {
           title: 'Users',

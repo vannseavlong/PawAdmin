@@ -3,13 +3,13 @@ import { type Service } from './schema'
 
 export type ServiceFilters = {
   active?: boolean
-  category?: string
+  category_id?: string
 }
 
 export function fetchServices(filters: ServiceFilters = {}) {
   return apiClient.get<{ services: Service[] }>('/admin/services', {
     active: filters.active,
-    category: filters.category,
+    category_id: filters.category_id,
   })
 }
 
@@ -19,7 +19,7 @@ export type ServicePayload = {
   price_from: number
   icon: string
   color: string
-  category: string
+  category_id: string
   active?: boolean
   sort_order?: number
 }

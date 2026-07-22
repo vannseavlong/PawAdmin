@@ -2,17 +2,20 @@ import { type ColumnDef } from '@tanstack/react-table'
 import { Switch } from '@/components/ui/switch'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
+import { type Category } from '@/features/categories/data/schema'
 import { type CatalogItem } from '../data/schema'
 import { DataTableRowActions } from './data-table-row-actions'
 
 type CatalogItemsColumnActions = {
   onToggleActive: (item: CatalogItem) => void
   isToggling: boolean
+  categoryNameById: Map<string, Category>
 }
 
 export function createCatalogItemsColumns({
   onToggleActive,
   isToggling,
+  categoryNameById,
 }: CatalogItemsColumnActions): ColumnDef<CatalogItem>[] {
   return [
     {
@@ -26,13 +29,13 @@ export function createCatalogItemsColumns({
       enableHiding: false,
     },
     {
-      accessorKey: 'category',
+      accessorKey: 'category_id',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title='Category' />
       ),
       cell: ({ row }) => (
         <span className='text-muted-foreground'>
-          {row.getValue('category') || '—'}
+          {categoryNameById.get(row.getValue('category_id'))?.name ?? '—'}
         </span>
       ),
     },

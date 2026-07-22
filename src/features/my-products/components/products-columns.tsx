@@ -4,17 +4,20 @@ import { toDisplayImageUrl } from '@/lib/drive-image'
 import { Switch } from '@/components/ui/switch'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
+import { type Category } from '@/features/categories/data/schema'
 import { type Product } from '../data/schema'
 import { DataTableRowActions } from './data-table-row-actions'
 
 type ProductsColumnActions = {
   onToggleActive: (item: Product) => void
   isToggling: boolean
+  categoryNameById: Map<string, Category>
 }
 
 export function createProductsColumns({
   onToggleActive,
   isToggling,
+  categoryNameById,
 }: ProductsColumnActions): ColumnDef<Product>[] {
   return [
     {
@@ -46,13 +49,13 @@ export function createProductsColumns({
       enableHiding: false,
     },
     {
-      accessorKey: 'category',
+      accessorKey: 'category_id',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title='Category' />
       ),
       cell: ({ row }) => (
         <span className='text-muted-foreground'>
-          {row.getValue('category') || '—'}
+          {categoryNameById.get(row.getValue('category_id'))?.name ?? '—'}
         </span>
       ),
     },

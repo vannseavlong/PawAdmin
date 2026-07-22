@@ -26,7 +26,15 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { useCategories } from '@/hooks/use-categories'
 import { type Shop } from '../data/schema'
 import { updateMyShop, type ShopUpdatePayload } from '../data/shop-api'
 
@@ -36,6 +44,7 @@ const formSchema = z.object({
   contact_email: z.email('Enter a valid email.').optional().or(z.literal('')),
   contact_phone: z.string().optional(),
   hours: z.string().optional(),
+  category_id: z.string().optional(),
 })
 type ShopFormValues = z.infer<typeof formSchema>
 
@@ -49,6 +58,7 @@ function toFormValues(shop: Shop): ShopFormValues {
     contact_email: shop.contact_email ?? '',
     contact_phone: shop.contact_phone ?? '',
     hours: shop.hours ?? '',
+    category_id: shop.category_id ?? '',
   }
 }
 
@@ -134,6 +144,7 @@ export function ShopEditDialog({
   onOpenChange,
 }: ShopEditDialogProps) {
   const queryClient = useQueryClient()
+  const { categories } = useCategories()
   const [logoEdit, setLogoEdit] = useState<ImageEdit>(undefined)
   const [bannerEdit, setBannerEdit] = useState<ImageEdit>(undefined)
 
@@ -226,6 +237,35 @@ export function ShopEditDialog({
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='category_id'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className='w-full'>
+                          <SelectValue placeholder='Select a category' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem
+                            key={category.category_id}
+                            value={category.category_id}
+                          >
+                            {category.icon ? `${category.icon} ` : ''}
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

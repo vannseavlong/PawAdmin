@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   type VisibilityState,
   flexRender,
@@ -23,33 +23,19 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { fetchCategories } from '@/features/categories/data/categories-api'
-import { type Service } from '../data/schema'
-import { reorderServices, updateService } from '../data/services-api'
-import { createServicesColumns } from './services-columns'
+import { type Category } from '../data/schema'
+import { reorderCategories, updateCategory } from '../data/categories-api'
+import { createCategoriesColumns } from './categories-columns'
 
 type DataTableProps = {
-  data: Service[]
+  data: Category[]
   search: Record<string, unknown>
   navigate: NavigateFn
 }
 
-export function ServicesTable({ data, search, navigate }: DataTableProps) {
+export function CategoriesTable({ data, search, navigate }: DataTableProps) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const queryClient = useQueryClient()
-
-  const { data: categoriesData } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => fetchCategories(),
-  })
-  const categories = useMemo(
-    () => categoriesData?.categories ?? [],
-    [categoriesData]
-  )
-  const categoryNameById = useMemo(
-    () => new Map(categories.map((c) => [c.category_id, c])),
-    [categories]
-  )
 
   const {
     globalFilter,
@@ -64,34 +50,31 @@ export function ServicesTable({ data, search, navigate }: DataTableProps) {
     navigate,
     pagination: { defaultPage: 1, defaultPageSize: 10 },
     globalFilter: { enabled: true, key: 'search' },
-    columnFilters: [
-      { columnId: 'category_id', searchKey: 'category_id', type: 'array' },
-      { columnId: 'active', searchKey: 'active', type: 'array' },
-    ],
+    columnFilters: [{ columnId: 'active', searchKey: 'active', type: 'array' }],
   })
 
   const toggleActiveMutation = useMutation({
-    mutationFn: (service: Service) =>
-      updateService(service.service_id, { active: !service.active }),
-    onSuccess: (_, service) => {
+    mutationFn: (category: Category) =>
+      updateCategory(category.category_id, { active: !category.active }),
+    onSuccess: (_, category) => {
       toast.success(
-        `"${service.name}" is now ${service.active ? 'inactive' : 'active'}.`
+        `"${category.name}" is now ${category.active ? 'inactive' : 'active'}.`
       )
-      queryClient.invalidateQueries({ queryKey: ['services'] })
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
     },
     onError: (error) => handleServerError(error),
   })
 
   const reorderMutation = useMutation({
-    mutationFn: (order: string[]) => reorderServices(order),
+    mutationFn: (order: string[]) => reorderCategories(order),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['services'] })
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
     },
     onError: (error) => handleServerError(error),
   })
 
-  const move = (service: Service, direction: 'up' | 'down') => {
-    const index = data.findIndex((s) => s.service_id === service.service_id)
+  const move = (category: Category, direction: 'up' | 'down') => {
+    const index = data.findIndex((c) => c.category_id === category.category_id)
     const swapWith = direction === 'up' ? index - 1 : index + 1
     if (index < 0 || swapWith < 0 || swapWith >= data.length) return
 
@@ -100,20 +83,19 @@ export function ServicesTable({ data, search, navigate }: DataTableProps) {
       reordered[swapWith],
       reordered[index],
     ]
-    reorderMutation.mutate(reordered.map((s) => s.service_id))
+    reorderMutation.mutate(reordered.map((c) => c.category_id))
   }
 
-  const columns = createServicesColumns({
-    onToggleActive: (service) => toggleActiveMutation.mutate(service),
-    onMoveUp: (service) => move(service, 'up'),
-    onMoveDown: (service) => move(service, 'down'),
-    canMoveUp: (service) =>
-      data.findIndex((s) => s.service_id === service.service_id) > 0,
-    canMoveDown: (service) =>
-      data.findIndex((s) => s.service_id === service.service_id) <
+  const columns = createCategoriesColumns({
+    onToggleActive: (category) => toggleActiveMutation.mutate(category),
+    onMoveUp: (category) => move(category, 'up'),
+    onMoveDown: (category) => move(category, 'down'),
+    canMoveUp: (category) =>
+      data.findIndex((c) => c.category_id === category.category_id) > 0,
+    canMoveDown: (category) =>
+      data.findIndex((c) => c.category_id === category.category_id) <
       data.length - 1,
     isReordering: reorderMutation.isPending,
-    categoryNameById,
   })
 
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -129,12 +111,8 @@ export function ServicesTable({ data, search, navigate }: DataTableProps) {
     globalFilterFn: (row, _columnId, filterValue: string) => {
       const term = filterValue.trim().toLowerCase()
       if (!term) return true
-      const service = row.original as Service
-      const categoryName = categoryNameById.get(service.category_id)?.name ?? ''
-      return (
-        service.name.toLowerCase().includes(term) ||
-        categoryName.toLowerCase().includes(term)
-      )
+      const category = row.original as Category
+      return category.name.toLowerCase().includes(term)
     },
     onPaginationChange,
     onColumnFiltersChange,
@@ -151,22 +129,12 @@ export function ServicesTable({ data, search, navigate }: DataTableProps) {
     ensurePageInRange(table.getPageCount())
   }, [table, ensurePageInRange])
 
-  const categoryOptions = categories.map((c) => ({
-    label: c.name,
-    value: c.category_id,
-  }))
-
   return (
     <div className={cn('flex flex-1 flex-col gap-4')}>
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Search by name or category...'
+        searchPlaceholder='Search by name...'
         filters={[
-          {
-            columnId: 'category_id',
-            title: 'Category',
-            options: categoryOptions,
-          },
           {
             columnId: 'active',
             title: 'Status',

@@ -14,7 +14,7 @@ const _catalogItemSchema = z.object({
   price_from: z.number(),
   icon: z.string().optional().default(''),
   color: z.string().optional().default(''),
-  category: z.string().optional().default(''),
+  category_id: z.string().optional().default(''),
   active: z.boolean(),
   sort_order: z.number(),
   // Optional — absent/undefined means "unlimited" concurrent bookings.

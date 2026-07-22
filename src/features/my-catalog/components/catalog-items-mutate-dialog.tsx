@@ -22,8 +22,16 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
+import { useCategories } from '@/hooks/use-categories'
 import { createCatalogItem, updateCatalogItem } from '../data/catalog-items-api'
 import { type CatalogItem } from '../data/schema'
 
@@ -31,7 +39,7 @@ const formSchema = z.object({
   name: z.string().min(1, 'Name is required.'),
   description: z.string().optional(),
   price_from: z.coerce.number().min(0, 'Price must be 0 or more.'),
-  category: z.string().optional(),
+  category_id: z.string().optional(),
   icon: z.string().optional(),
   color: z.string().optional(),
   active: z.boolean(),
@@ -58,6 +66,7 @@ export function CatalogItemsMutateDialog({
 }: CatalogItemsMutateDialogProps) {
   const isEdit = !!currentRow
   const queryClient = useQueryClient()
+  const { categories } = useCategories()
 
   const form = useForm<CatalogItemFormInput, unknown, CatalogItemForm>({
     resolver: zodResolver(formSchema),
@@ -66,7 +75,7 @@ export function CatalogItemsMutateDialog({
           name: currentRow.name,
           description: currentRow.description,
           price_from: currentRow.price_from,
-          category: currentRow.category,
+          category_id: currentRow.category_id,
           icon: currentRow.icon,
           color: currentRow.color,
           active: currentRow.active,
@@ -77,7 +86,7 @@ export function CatalogItemsMutateDialog({
           name: '',
           description: '',
           price_from: 0,
-          category: '',
+          category_id: '',
           icon: '',
           color: '',
           active: true,
@@ -189,19 +198,33 @@ export function CatalogItemsMutateDialog({
               />
               <FormField
                 control={form.control}
-                name='category'
+                name='category_id'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
                     <FormLabel className='col-span-2 text-end'>
                       Category
                     </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='grooming'
-                        className='col-span-4'
-                        {...field}
-                      />
-                    </FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className='col-span-4'>
+                          <SelectValue placeholder='Select a category' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem
+                            key={category.category_id}
+                            value={category.category_id}
+                          >
+                            {category.icon ? `${category.icon} ` : ''}
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage className='col-span-4 col-start-3' />
                   </FormItem>
                 )}

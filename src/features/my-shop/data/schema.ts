@@ -16,6 +16,7 @@ const _shopSchema = z.object({
   shop_id: z.string(),
   application_id: z.string().optional(),
   owner_user_id: z.string(),
+  category_id: z.string().optional().default(''),
   name: z.string(),
   description: z.string().optional().default(''),
   logo: z.string().optional().default(''),

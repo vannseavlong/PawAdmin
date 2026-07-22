@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { DataTableColumnHeader } from '@/components/data-table'
 import { LongText } from '@/components/long-text'
+import { type Category } from '@/features/categories/data/schema'
 import { type Service } from '../data/schema'
 import { DataTableRowActions } from './data-table-row-actions'
 
@@ -15,6 +16,7 @@ type ServicesColumnActions = {
   canMoveUp: (service: Service) => boolean
   canMoveDown: (service: Service) => boolean
   isReordering: boolean
+  categoryNameById: Map<string, Category>
 }
 
 export function createServicesColumns({
@@ -24,6 +26,7 @@ export function createServicesColumns({
   canMoveUp,
   canMoveDown,
   isReordering,
+  categoryNameById,
 }: ServicesColumnActions): ColumnDef<Service>[] {
   return [
     {
@@ -76,15 +79,18 @@ export function createServicesColumns({
       enableHiding: false,
     },
     {
-      accessorKey: 'category',
+      accessorKey: 'category_id',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title='Category' />
       ),
-      cell: ({ row }) => (
-        <Badge variant='outline' className='capitalize'>
-          {row.getValue('category')}
-        </Badge>
-      ),
+      cell: ({ row }) => {
+        const category = categoryNameById.get(row.getValue('category_id'))
+        return (
+          <Badge variant='outline'>
+            {category ? `${category.icon ? `${category.icon} ` : ''}${category.name}` : 'Unknown'}
+          </Badge>
+        )
+      },
       filterFn: (row, id, value) => value.includes(row.getValue(id)),
     },
     {

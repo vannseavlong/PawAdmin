@@ -13,6 +13,7 @@ export type ShopUpdatePayload = Partial<{
   contact_email: string
   contact_phone: string
   hours: string
+  category_id: string
   // string ('' clears it, unchanged if omitted) or a new file to upload
   logo: string | File
   banner: string | File
